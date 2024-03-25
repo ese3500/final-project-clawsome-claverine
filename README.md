@@ -11,15 +11,25 @@
 
 ### 1. Abstract
 
-In a few sentences, describe your final project. This abstract will be used as the description in the evaluation survey forms.
+<!--In a few sentences, describe your final project. This abstract will be used as the description in the evaluation survey forms.-->
+
+We will assemble and programm our own clawing machine with the help of the ATmega328PB with some extra features like a screen for a countdown or party LED's. A claw machine is an arcade game where players use a mechanical claw to try and grab prizes inside a glass enclosure. Players control the claw with one or more joysticks, attempting to grab a prize by maneuvering the claw over it and pressing a button (or using a joystick) to lower it. Winning prizes can be challenging due to the game's rigged nature, adding to its excitement, even extra gittering motion can be added to make it harder (which could be done for example with game modes).
 
 ### 2. Motivation
 
-What is the problem that you are trying to solve? Why is this project interesting? What is the intended purpose?
+<!--What is the problem that you are trying to solve? Why is this project interesting? What is the intended purpose?-->
+
+What if I told you that entertainment, excitement, and endless fun were just a claw's reach away? Our Claw Machine brings the excitement of the arcade into Dedkin, offering an irresistible experience that captivates players of all majors and levels. But wait, there's more! Our Claw Machine isn't just about winning prizes, it's about creating unforgettable memories and moments of pure joy to balance your work when you are rushing throught the assignment 5 hours before due. And the best, our machine is not the usual one you know but it is upgraded with an additional screen for more tention and LED's for the maximum excitement.
 
 ### 3. Goals
 
-These are to help guide and direct your progress.
+<!--These are to help guide and direct your progress.-->
+- Tearing down the hardware and figuring out every single component that we could take out of it for use in our clawing machine
+- Getting the crane to work and having a clawing machine with the fundamental functionallities (start, stop, joystick movement and grabbing)
+- Adding a Screen displaying a counter
+- Adding audio and LED's for more excitement
+- Figuring out the light sensor to detect success (for visual and audio effects when an item was won)
+- Adding different difficulties
 
 ### 4. Software Requirements Specification (SRS)
 
