@@ -41,19 +41,27 @@ Formulate key hardware requirements here.
 
 ### 6. MVP Demo
 
-What do you expect to accomplish by the first milestone?
+<!--What do you expect to accomplish by the first milestone?-->
+We want to have basic functionality of the machine working with our own software and the ATmega328PB, so at this point we aim to be able to demonstrate that we can grab an object. 
 
 ### 7. Final Demo
 
-What do you expect to achieve by the final demonstration or after milestone 1?
+<!--What do you expect to achieve by the final demonstration or after milestone 1?-->
+
+For the final demo we expact to have all the features implemented (which are mentioned in the goals) and have everything working such that students can enjoy the maximum excitment when playing our machine.
 
 ### 8. Methodology
 
-What is your approach to the problem?
+<!--What is your approach to the problem?-->
+
+We already did a lot of research and it is far to expensive to buy a crane or even build it ourselves and on top of all this is not a class about mechanical engineering but about embedded systems which is why we decided to buy a machine containing the crane, taking it apart completely, figuring out all the parts we want to use (especially all the mechanical parts) and start our own clawing machine with the gained components.
 
 ### 9. Components
 
-What major components do you need and why?
+<!--What major components do you need and why?-->
+- ATmega328PB
+- (screen, (we have to look up the tecnical name for the screen we used))
+- (components out of the machine we bought)
 
 ### 10. Evaluation
 
