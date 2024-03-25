@@ -1,9 +1,9 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/2TmiRqwI)
 # final-project-skeleton
 
-    * Name: 
-    * Github Repository URL: 
-    * Description of hardware: (embedded hardware, laptop, etc) 
+    * Name: August Fu & Darian Mettler
+    * Github Repository URL: https://github.com/ese3500/final-project-clawsome-claverine
+    * Description of hardware: ATmega328PB, Windows on Arm 11 (Surface X Pro)
 
 ## Github Repo Submission Resources
 
