@@ -78,7 +78,9 @@ For the MVP demonstration, our primary objective is to showcase the core functio
 
 - Manual Control: Allow users to start and stop the game manually, providing a basic but functional gaming experience.
 
-While the MVP demo may lack advanced features such as party mode LEDs or complex difficulty levels, it establishes a solid foundation upon which we can build and iterate for the final demonstration.### 7. Final Demo
+While the MVP demo may lack advanced features such as party mode LEDs or complex difficulty levels, it establishes a solid foundation upon which we can build and iterate for the final demonstration.
+
+### 7. Final Demo
 
 <!--What do you expect to achieve by the final demonstration or after milestone 1?-->
 
