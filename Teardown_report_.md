@@ -8,6 +8,12 @@
     * Description of hardware: ATmega328PB, Windows on Arm 11 (Surface X Pro)
 
 ## Final Teardown report
+
+### Work done
+- We labeled all the calbes
+- We found out how the cables are supposed to work
+- All the wires to the top part was cut
+
 ### Motor control
 - 3 motors
 - Each motor has two wires (ground and hight)
