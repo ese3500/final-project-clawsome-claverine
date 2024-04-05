@@ -14,6 +14,10 @@
 - We found out how the cables are supposed to work
 - All the wires to the top part was cut
 
+![motor](Motors_top.JPG)
+![label 1](wire_labeling_1.JPG)
+![label 0](wire_labeling_0.JPG)
+
 ### Motor control
 - 3 motors
 - Each motor has two wires (ground and hight)
