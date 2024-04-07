@@ -36,6 +36,53 @@
 - Buzzer
 - Coin detection mechanism
 
+## Project Build documentation
+### Setup
+#### Parts used
+- ATmega328PB
+- Adafruit, 1.8'' TFT, LCD Display
+- Parts from basic clawing machine
+    - Crane
+    - Collision sensors
+#### Connections to ATmega328PB
+
+| ATmega328PB port | Connected device | Connected device port | remark |
+|----------|----------|----------|----------|
+|PB0|Adafruit, 1.8'' TFT, LCD Display|RESET|          |
+|PB1|Adafruit, 1.8'' TFT, LCD Display|D/C|          |
+|PB2|Adafruit, 1.8'' TFT, LCD Display|TFT_CS|          |
+|PB3|Adafruit, 1.8'' TFT, LCD Display|MOSI|          |
+|PB5|Adafruit, 1.8'' TFT, LCD Display|SCK|          |
+|PD6|Adafruit, 1.8'' TFT, LCD Display|LITE|          |
+|          |          |          |          |
+|          |          |          |          |
+|          |          |          |          |
+
+##### Connections to Ground
+| Connected device | Connected device port | remark |
+|----------|----------|----------|
+|Adafruit, 1.8'' TFT, LCD Display|GND|          |
+|          |          |          |
+|          |          |          |
+|          |          |          |
+|          |          |          |
+
+
+##### Connections to Vcc (5V)
+| Connected device | Connected device port | remark |
+|----------|----------|----------|
+|Adafruit, 1.8'' TFT, LCD Display|VCC|          |
+|          |          |          |
+|          |          |          |
+|          |          |          |
+|          |          |          |
+
+### Libraries and connectins used
+- UART for Debugging
+
+### Sources
+- We used parts of the code provided in class, the labs as well as the worksheets
+- Parts of the code are from Augusts and Darians solutions to the labs and worksheets
 
 ## Github Repo Submission Resources
 
