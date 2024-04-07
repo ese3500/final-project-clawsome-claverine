@@ -7,9 +7,9 @@
 
 
 
-#define F_CPU                16000000UL   // 16MHz clock
-#define USART_BAUD_RATE      9600
-#define USART_BAUD_PRESCALER (((F_CPU / (USART_BAUD_RATE * 16UL))) - 1)
+#define F_CPU 16000000UL
+#define BAUD_RATE 9600
+#define BAUD_PRESCALER (((F_CPU / (BAUD_RATE * 16UL))) - 1)
 
 // #define INPUT_DEV wifi_input
 // #define INPUT_DEV wifi_input
@@ -23,21 +23,29 @@
 
 #include <stdio.h>
 
+volatile char String[25]; //printing out message
+
 void Initialize()
 {
-	UART_init(USART_BAUD_PRESCALER);
+	// Initialization LCD Screen
 	lcd_init();
+	// Initialization USART Connection for debugging
+	UART_init(BAUD_PRESCALER);
+	// Initialization
 	cli();
 	sei();
 }
 
 int main(void)
 {
-    /* Replace with your application code */
+	// Initialization
+	Initialize();
 	
-	char String[25];
-	sprintf(String,"Hello World\n");
+	// Debug USART Printing test
+	sprintf(String,"Wellcome to Clawesome Claverine \n");
 	UART_putstring(String);
-    while (1);
+	// Code
+
+	while (1);
 }
 
