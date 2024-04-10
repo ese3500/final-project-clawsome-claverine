@@ -48,8 +48,8 @@
 
 | ATmega328PB port | Connected device | Connected device port | remark |
 |----------|----------|----------|----------|
-|PB0|Adafruit, 1.8'' TFT, LCD Display|RESET|          |
-|PB1|Adafruit, 1.8'' TFT, LCD Display|D/C|          |
+|PB0|Adafruit, 1.8'' TFT, LCD Display|D/C|          |
+|PB1|Adafruit, 1.8'' TFT, LCD Display|RESET|          |
 |PB2|Adafruit, 1.8'' TFT, LCD Display|TFT_CS|          |
 |PB3|Adafruit, 1.8'' TFT, LCD Display|MOSI|          |
 |PB5|Adafruit, 1.8'' TFT, LCD Display|SCK|          |
@@ -58,7 +58,7 @@
 |          |          |          |          |
 |          |          |          |          |
 
-##### Connections to Ground
+##### Connections to Ground (Yellow)
 | Connected device | Connected device port | remark |
 |----------|----------|----------|
 |Adafruit, 1.8'' TFT, LCD Display|GND|          |
@@ -68,7 +68,7 @@
 |          |          |          |
 
 
-##### Connections to Vcc (5V)
+##### Connections to Vcc (5V) (Green)
 | Connected device | Connected device port | remark |
 |----------|----------|----------|
 |Adafruit, 1.8'' TFT, LCD Display|VCC|          |
