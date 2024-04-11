@@ -9,6 +9,9 @@
 #define BAUD_RATE 9600
 #define BAUD_PRESCALER (((F_CPU / (BAUD_RATE * 16UL))) - 1)
 
+#define ADC_LEFTRIGHT_CHANNEL 0x00
+#define ADC_BACKFORTH_CHANNEL 0x01
+
 // #define INPUT_DEV wifi_input
 // #define INPUT_DEV wifi_input
 
@@ -26,6 +29,80 @@ volatile uint16_t adc_value_leftright = 500;
 #include <stdio.h>
 
 volatile char String[25]; //printing out message
+
+void selectADCchannel(uint8_t channel){
+    //0xE0 is 11100000
+    //0x1F is 00011111
+    ADMUX = (ADMUX & 0xE0) | (channel & 0x1F);
+}
+
+ISR(ADC_vect) {
+    //get current channel
+    uint8_t currentChannel = ADMUX & 0x0F;
+
+    //set output compare registers for current channel, and switch to next channel
+    switch(currentChannel){
+        case ADC_LEFTRIGHT_CHANNEL: 
+			adc_value_leftright = ADCH;
+			sprintf(String,"ADC left/right channel read %u \n", adc_value_leftright);
+			UART_putstring(String);
+			selectADCchannel(ADC_BACKFORTH_CHANNEL);
+            break;
+        case ADC_BACKFORTH_CHANNEL: 
+			adc_value_backforth = ADCH;
+			sprintf(String,"ADC forward/backward channel read %u \n", adc_value_backforth);
+			UART_putstring(String);
+			selectADCchannel(ADC_LEFTRIGHT_CHANNEL);
+            break;
+    }
+
+    //restart conversion
+    ADCSRA |= 1 << ADSC;
+}
+
+void setUpADC() {
+	 // Setup for ADC (10bit = 0-1023)
+	 // Clear power reduction bit for ADC
+	 PRR0 &= ~(1 << PRADC);
+
+	 // Select Vref = AVcc
+	 ADMUX |= (1 << REFS0);
+	 ADMUX &= ~(1 << REFS1);
+
+	// //enable result shift to ADCH to only read ADCH (8 bits)
+    // ADMUX |= 1<<ADLAR;
+
+	 // Set the ADC clock div by 128
+	 // 16M/128=125kHz
+	 ADCSRA |= (1 << ADPS0);
+	 ADCSRA |= (1 << ADPS1);
+	 ADCSRA |= (1 << ADPS2);
+
+	 // Select Channel ADC0 (pin C0)
+	 ADMUX &= ~(1 << MUX0);
+	 ADMUX &= ~(1 << MUX1);
+	 ADMUX &= ~(1 << MUX2);
+	 ADMUX &= ~(1 << MUX3);
+
+	 ADCSRA |= (1 << ADATE);   // Autotriggering of ADC
+
+	// Free running mode ADTS[2:0] = 000
+	//  ADCSRB &= ~(1 << ADTS0);
+	//  ADCSRB &= ~(1 << ADTS1);
+	//  ADCSRB &= ~(1 << ADTS2);
+
+	//enable interrupt
+    ADCSRA |= 1<<ADIE;
+
+	// Disable digital input buffer on ADC pin
+	DIDR0 |= (1 << ADC0D);
+
+	// Enable ADC
+	ADCSRA |= (1 << ADEN);
+
+	// Start conversion
+	ADCSRA |= (1 << ADSC);	
+}
 
 void Initialize()
 {
@@ -57,43 +134,8 @@ void Initialize()
 	PORTD &= ~(1<<PORTD3);
 	PORTD &= ~(1<<PORTD4);
 	PORTD &= ~(1<<PORTD5);
-	//////////////////////////////// start ADC setup
-// 	 // Setup for ADC (10bit = 0-1023)
-// 	 // Clear power reduction bit for ADC
-// 	 PRR0 &= ~(1 << PRADC);
-// 
-// 	 // Select Vref = AVcc
-// 	 ADMUX |= (1 << REFS0);
-// 	 ADMUX &= ~(1 << REFS1);
-// 
-// 	 // Set the ADC clock div by 128
-// 	 // 16M/128=125kHz
-// 	 ADCSRA |= (1 << ADPS0);
-// 	 ADCSRA |= (1 << ADPS1);
-// 	 ADCSRA |= (1 << ADPS2);
-// 
-// 	 // Select Channel ADC0 (pin C0)
-// 	 ADMUX &= ~(1 << MUX0);
-// 	 ADMUX &= ~(1 << MUX1);
-// 	 ADMUX &= ~(1 << MUX2);
-// 	 ADMUX &= ~(1 << MUX3);
-// 
-// 	 ADCSRA |= (1 << ADATE);   // Autotriggering of ADC
-// 
-// 	 // Free running mode ADTS[2:0] = 000
-// 	 ADCSRB &= ~(1 << ADTS0);
-// 	 ADCSRB &= ~(1 << ADTS1);
-// 	 ADCSRB &= ~(1 << ADTS2);
-// 
-// 	 // Disable digital input buffer on ADC pin
-// 	 DIDR0 |= (1 << ADC0D);
-// 
-// 	 // Enable ADC
-// 	 ADCSRA |= (1 << ADEN);
-// 
-// 	 // Start conversion
-// 	 ADCSRA |= (1 << ADSC	 
-/////////////////////////////////////////////////////// end ADC
+	
+	setUpADC();
 	
 	sei();
 }
@@ -129,6 +171,8 @@ void Initialize()
 // 	 
 // 	 return adcValue;
 // }
+
+
 
 void motor_stop()
 {
