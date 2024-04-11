@@ -43,15 +43,15 @@ ISR(ADC_vect) {
     //set output compare registers for current channel, and switch to next channel
     switch(currentChannel){
         case ADC_LEFTRIGHT_CHANNEL: 
-			adc_value_leftright = ADCH;
-			sprintf(String,"ADC left/right channel read %u \n", adc_value_leftright);
-			UART_putstring(String);
+			adc_value_leftright = ADC;
+// 			sprintf(String,"ADC left/right channel read %u \n", adc_value_leftright);
+// 			UART_putstring(String);
 			selectADCchannel(ADC_BACKFORTH_CHANNEL);
             break;
         case ADC_BACKFORTH_CHANNEL: 
-			adc_value_backforth = ADCH;
-			sprintf(String,"ADC forward/backward channel read %u \n", adc_value_backforth);
-			UART_putstring(String);
+			adc_value_backforth = ADC;
+// 			sprintf(String,"ADC forward/backward channel read %u \n", adc_value_backforth);
+// 			UART_putstring(String);
 			selectADCchannel(ADC_LEFTRIGHT_CHANNEL);
             break;
     }

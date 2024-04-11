@@ -44,6 +44,10 @@
 - Parts from basic clawing machine
     - Crane
     - Collision sensors
+
+#### Motor control circuit
+The circuit we have done so far is the motor control circuit, which is able to sink and supply enough voltage and current to drive to motors controlled by the ATmega. However, it only consists out of eight pull up/down paths as shown in the picture below. Each of those paths is able to take the output of one pin of the atmega and convert it in either a 4.5V output which can supply up to 200mA or a 0V output which is able to sink up to 200mA. It is quite a simple technique, and we are using high power P-Channel and N-Channel MOSFETs.
+![](Graph_of_motor_supply_circuit_path.png)
 #### Connections to ATmega328PB
 
 | ATmega328PB port | Connected device | Connected device port | remark |
