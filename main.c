@@ -172,19 +172,43 @@ void Initialize()
 // 	 return adcValue;
 // }
 
+void motor_stop_backforth()
+{
+	// 	DDRD |= (1<<DDD3);
+	// 	DDRD |= (1<<DDD5);
+// 	PORTC &= ~(1<<PORTC2); //right
+// 	PORTC &= ~(1<<PORTC3); //left
+	// 	PORTC &= ~(1<<PORTC4); //back
+	// 	PORTC &= ~(1<<PORTC5); //forth
+	// 	PORTD &= ~(1<<PORTD3);
+	 	PORTD &= ~(1<<PORTD4); //back
+	 	PORTD &= ~(1<<PORTD5); //forth
+}
 
-
-void motor_stop()
+void motor_stop_rightleft()
 {
 // 	DDRD |= (1<<DDD3);
 // 	DDRD |= (1<<DDD5);
 	PORTC &= ~(1<<PORTC2); //right
 	PORTC &= ~(1<<PORTC3); //left
-	PORTC &= ~(1<<PORTC4); //back
-	PORTC &= ~(1<<PORTC5); //forth
-	PORTD &= ~(1<<PORTD3);
-	PORTD &= ~(1<<PORTD4);
-	PORTD &= ~(1<<PORTD5);
+// 	PORTC &= ~(1<<PORTC4); //back
+// 	PORTC &= ~(1<<PORTC5); //forth
+// 	PORTD &= ~(1<<PORTD3);
+// 	PORTD &= ~(1<<PORTD4);
+// 	PORTD &= ~(1<<PORTD5);
+}
+
+void motor_stop_updown()
+{
+	// 	DDRD |= (1<<DDD3);
+	// 	DDRD |= (1<<DDD5);
+// 	PORTC &= ~(1<<PORTC2); //right
+// 	PORTC &= ~(1<<PORTC3); //left
+	PORTC &= ~(1<<PORTC4); //up
+	PORTC &= ~(1<<PORTC5); //down
+// 	PORTD &= ~(1<<PORTD3);
+// 	PORTD &= ~(1<<PORTD4);
+// 	PORTD &= ~(1<<PORTD5);
 }
 
 void drive_motor_right()
@@ -219,19 +243,19 @@ void drive_motor_up()
 
 void drive_motor_back()
 {
-	sprintf(String,"gone through\n");
-	UART_putstring(String);
-	DDRD &= (1<<DDD3);
+// 	sprintf(String,"gone through\n");
+// 	UART_putstring(String);
+// 	DDRD &= (1<<DDD3);
 	PORTD |= (1<<PORTD4);
 	PORTD &= ~(1<<PORTD5);
 }
 
 void drive_motor_forth()
 {
-	sprintf(String,"gone through\n");
-	UART_putstring(String);
-	DDRD &= (1<<DDD5);
-	PORTD |= (1<<PORTD3);
+// 	sprintf(String,"gone through\n");
+// 	UART_putstring(String);
+// 	DDRD &= (1<<DDD5);
+	PORTD |= (1<<PORTD5);
 	PORTD &= ~(1<<PORTD4);
 }
 
@@ -262,31 +286,48 @@ int main(void)
 //  		motor_stop();
 // 		_delay_ms(500);
 
+// 	while(1)
+// 	{
+// 		drive_motor_right();
+// 	}
 
 	while(1)
 	{
-		if(adc_value_leftright>950)
+		if(adc_value_backforth>950)
 		{
 			drive_motor_right();
-		}else if(adc_value_leftright<50)
+		}else if(adc_value_backforth<50)
 		{
 			drive_motor_left();
 		}else
 		{
-			motor_stop();
+			motor_stop_rightleft();
 		}
 		
-		if(adc_value_backforth>950)
+// 		_delay_ms(500);
+		
+		if(adc_value_leftright>950)
 		{
 // 			drive_motor_back();
-			drive_motor_down();
-		}else if(adc_value_backforth<50)
+			drive_motor_back();
+		}else if(adc_value_leftright<50)
 		{
 // 			drive_motor_forth();
-			drive_motor_up();
+			drive_motor_forth();
 			}else
 		{
-			motor_stop();
+			motor_stop_backforth();
+		}
+		
+		if(0)
+		{
+			drive_motor_up();
+		}else if (0)
+		{
+			drive_motor_down();
+		}else
+		{
+			motor_stop_updown();
 		}
 	}
 	
