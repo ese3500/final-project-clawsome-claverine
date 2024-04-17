@@ -26,6 +26,20 @@
 volatile uint16_t adc_value_backforth = 500;
 volatile uint16_t adc_value_leftright = 500;
 
+// volatile uint8_t right_boundary_hit = 0;
+// volatile uint8_t left_boundary_hit = 0;
+
+// Enumeration for game modes
+enum GameMode {
+    SLEEP,
+	PLAY,
+    WIN,
+    LOSS
+};
+
+// Global variable to store the current game mode
+enum GameMode game_mode = SLEEP;
+
 #include <stdio.h>
 
 volatile char String[25]; //printing out message
@@ -104,6 +118,82 @@ void setUpADC() {
 	ADCSRA |= (1 << ADSC);	
 }
 
+// void set_up_catch_sensors() {
+// 	// PD7 as input, with pull-up resistors enabled
+// //     DDRD &= ~(1 << PIND7);
+// //     PORTD |= (1 << PIND7);
+// // 
+// //     EIMSK |= (1 << INT2); // enable external interrupts
+// // 
+// // 	EICRA |= (1 << ISC21); // trigger on falling edge
+// }
+
+// ISR for INT2 (PD7)
+ISR(INT2_vect) {
+	sprintf(String,"ISR PD7\n");
+	UART_putstring(String);
+    // check if PD7 is low (falling edge)
+    if (!(PIND & (1 << PIND7))) {
+		sprintf(String,"PD7 triggered, enter winning mode \n");
+		UART_putstring(String);
+        game_mode = WIN;
+    }
+}
+
+void set_up_rightleft_sensors() {
+// 	// PD0 and PD1 as input, with pull-up resistors enabled
+	DDRD &= ~(1 << PIND0) & ~(1 << PIND1);
+	PORTD |= (1 << PIND0) | (1 << PIND1);
+
+// 	PCICR |= (1 << PCIE2); // Enable PCINT group 2
+// 	PCMSK2 |= (1 << PCINT16) | (1 << PCINT17); // Enable PD0 (PCINT16) and PD1 (PCINT17)
+}
+
+// ISR for INT0 (PD0)
+// ISR(PCINT2_vect) {
+// // 	if(PIND & (1<<PIND0))
+// // 	{
+// // 		sprintf(String,"ISR PD0\n");
+// // 		UART_putstring(String);
+// // 		_delay_ms(50);
+// // 	}
+// // 	sprintf(String,"ISR PD0\n");
+// // 	UART_putstring(String);
+// //     if (!(PIND & (1 << PIND0))) {
+// // 		sprintf(String,"PD0 triggered, stop left right sensors\n");
+// // 		UART_putstring(String);
+// //         motor_stop_rightleft();
+// //     }
+// 	
+// 	// 	sprintf(String,"ISR PD1\n");
+// 	// 	UART_putstring(String);
+// // 	if ((PIND & (1 << PIND0))) {
+// // 		right_boundary_hit = 1;
+// // 		// 		sprintf(String,"PD1 triggered, stop left right sensors\n");
+// // 		// 		UART_putstring(String);
+// // 		//         motor_stop_rightleft();
+// // 	}else
+// // 	{
+// // 		right_boundary_hit = 0;
+// // 	}
+// }
+// 
+// // ISR for INT1 (PD1)
+// ISR(INT1_vect) {
+// 	sprintf(String,"ISR PD1\n");
+// 	UART_putstring(String);
+// 	_delay_ms(50);
+// //     if ((PIND & (1 << PIND1))) {
+// // 		right_boundary_hit = 1;
+// // // 		sprintf(String,"PD1 triggered, stop left right sensors\n");
+// // // 		UART_putstring(String);
+// // //         motor_stop_rightleft();
+// //     }else
+// // 	{
+// // 		right_boundary_hit = 0;
+// // 	}
+// }
+
 void Initialize()
 {
 	// Initialization LCD Screen
@@ -143,43 +233,18 @@ void Initialize()
 	
 	PINE &= ~(1<<PINE2);
 	PINE &= ~(1<<PINE3);
+
+//     set_up_catch_sensors();
+ 	set_up_rightleft_sensors();
 	
 	setUpADC();
 	
 	sei();
+	
+// 	UART_init(BAUD_PRESCALER);
 }
 
-// uint16_t read_adc (uint8_t channel)
-// {
-// 	ADMUX &= ~((1 << MUX0) | (1 << MUX1) | (1 << MUX2) | (1 << MUX3));
-// 	
-// 	if(channel){
-// 		ADMUX |= (1 << MUX0);
-// // 		sprintf(String,"ADC 1 read %u \n", ADC);
-// // 		UART_putstring(String		
-// // 		return ADC;
-// 	}else
-// 	{
-// // 		sprintf(String,"ADC 0 read %u \n", ADC);
-// // 		UART_putstring(String		
-// // 		return ADC;
-// 	}
-// 	 ADCSRA |= (1 << ADSC);
-// 	 
-// 	 // Wait for conversion to complete
-// 	 while (ADCSRA & (1 << ADSC))
-// 	 {
-// 		 // You can add some delay or other tasks here
-// 	 }
-// 	 
-// 	 // Read ADC result (16-bit value, ADCL must be read first)
-// 	 uint16_t adcValue = ADCL | (ADCH << 8);
-// 	 
-// 		 sprintf(String,"ADC 1 read %u \n", ADC);
-//  		UART_putstring(String);
-// 	 
-// 	 return adcValue;
-// }
+
 
 void motor_stop_backforth()
 {
@@ -276,75 +341,103 @@ void drive_motor_forth()
 	PORTD &= ~(1<<PORTD4);
 }
 
+void drive_motors() {
+    if((adc_value_backforth>950) && !(PIND & (1<<PIND0)))
+    {
+        drive_motor_right();
+    }else if((adc_value_backforth<50) && !(PIND & (1<<PIND1)))
+    {
+		drive_motor_left();
+    }else
+    {
+        motor_stop_rightleft();
+    }
+    
+// 		_delay_ms(500);
+    
+    if(adc_value_leftright>950)
+    {
+// 			drive_motor_back();
+        drive_motor_back();
+    }else if(adc_value_leftright<50)
+    {
+// 			drive_motor_forth();
+        drive_motor_forth();
+        }else
+    {
+        motor_stop_backforth();
+    }
+    
+    if(PINE & (1<<PINE2))
+    {
+        drive_motor_up();
+    }else if (PINE & (1<<PINE3))
+    {
+        drive_motor_down();
+    }else
+    {
+        motor_stop_updown();
+    }
+}
+
 int main(void)
 {
 	// Initialization
 	Initialize();
+// 	UART_init(BAUD_PRESCALER);
 	
 	// Debug USART Printing test
-	sprintf(String,"Wellcome to Clawesome Claverine %u \n", ADC);
+	char String[25];
+	sprintf(String,"Wellcome to Clawesome Claverine \n");
 	UART_putstring(String);
+	
 	// Code
-	LCD_setScreen(MAGENTA);
+	LCD_setScreen(GREEN);
 	LCD_drawBlock(1,19,158,127,BLUE);
 	sprintf(String,"gone through\n");
 	UART_putstring(String);
-// 	while(1)
-// 	{
-// 		sprintf(String,"gone through %u \n",ADC);
-// 		UART_putstring(String);
-// 		drive_motor_right();
-// 		motor_stop();
-// 		_delay_ms(500);
-// 		motor_stop();
-// 		_delay_ms(500);
-//  		drive_motor_left();
-//  		_delay_ms(500);
-//  		motor_stop();
-// 		_delay_ms(500);
 
-// 	while(1)
-// 	{
-// 		drive_motor_right();
-// 	}
+    /* Set game mode, this could be an ISR from a button press, but 
+	 *for now this is hardcoded to be PLAY mode */
+	game_mode = PLAY;
+	sprintf(String,"setting game mode to PLAY \n");
+	UART_putstring(String);
+	
+	while (1)
+	{
+		drive_motors();
+	}
 
 	while(1)
-	{
-		if(adc_value_backforth>950)
-		{
-			drive_motor_right();
-		}else if(adc_value_backforth<50)
-		{
-			drive_motor_left();
-		}else
-		{
-			motor_stop_rightleft();
-		}
-		
-// 		_delay_ms(500);
-		
-		if(adc_value_leftright>950)
-		{
-// 			drive_motor_back();
-			drive_motor_back();
-		}else if(adc_value_leftright<50)
-		{
-// 			drive_motor_forth();
-			drive_motor_forth();
-			}else
-		{
-			motor_stop_backforth();
-		}
-		
-		if(PINE & (1<<PINE2))
-		{
-			drive_motor_up();
-		}else if (PINE & (1<<PINE3))
-		{
-			drive_motor_down();
-		}else
-		{
-			motor_stop_updown();
+	{	
+		// Check the current game mode and perform actions accordingly
+		switch (game_mode) {
+			case SLEEP:
+				sprintf(String,"SLEEP mode\n");
+				UART_putstring(String);
+				break;
+			case PLAY:
+				sprintf(String,"PLAY mode, driving motors\n");
+				UART_putstring(String);
+				drive_motors();
+				break;
+			case WIN:
+				sprintf(String,"WIN mode starts, turn on LED lights\n");
+				UART_putstring(String);
+				/* Turn on LED lights */
+				_delay_ms(500);
+				sprintf(String,"WIN mode ends, turn off LED lights\n");
+				UART_putstring(String);
+				sprintf(String,"Setting game mode to SLEEP\n");
+				UART_putstring(String);
+				game_mode = SLEEP;
+				break;
+			case LOSS:
+				sprintf(String,"LOSS mode\n");
+				UART_putstring(String);
+				break;
+			default:	
+				break;
 		}
 	}
 	
