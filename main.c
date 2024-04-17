@@ -135,6 +135,15 @@ void Initialize()
 	PORTD &= ~(1<<PORTD4);
 	PORTD &= ~(1<<PORTD5);
 	
+	
+	// buttons up down
+	
+	DDRE &= ~(1<<DDE2);
+	DDRE &= ~(1<<DDE3);
+	
+	PINE &= ~(1<<PINE2);
+	PINE &= ~(1<<PINE3);
+	
 	setUpADC();
 	
 	sei();
@@ -174,13 +183,13 @@ void Initialize()
 
 void motor_stop_backforth()
 {
-	// 	DDRD |= (1<<DDD3);
-	// 	DDRD |= (1<<DDD5);
+		DDRD |= (1<<DDD3);
+	 	DDRD |= (1<<DDD5);
 // 	PORTC &= ~(1<<PORTC2); //right
 // 	PORTC &= ~(1<<PORTC3); //left
 	// 	PORTC &= ~(1<<PORTC4); //back
 	// 	PORTC &= ~(1<<PORTC5); //forth
-	// 	PORTD &= ~(1<<PORTD3);
+	 	PORTD &= ~(1<<PORTD3);
 	 	PORTD &= ~(1<<PORTD4); //back
 	 	PORTD &= ~(1<<PORTD5); //forth
 }
@@ -245,16 +254,24 @@ void drive_motor_back()
 {
 // 	sprintf(String,"gone through\n");
 // 	UART_putstring(String);
-// 	DDRD &= (1<<DDD3);
+// 	PORTD |= (1<<PORTD3);
+// 	PORTD |= (1<<PORTD5);
+// 	DDRD &= ~(1<<DDD5);
+// 	DDRD |= (1<<DDD3);
+// 	PIND &= ~(1<<PIND5);
+// 	PORTD |= (1<<PORTD5);
 	PORTD |= (1<<PORTD4);
-	PORTD &= ~(1<<PORTD5);
+	PORTD &= ~(1<<PORTD3);
 }
 
 void drive_motor_forth()
 {
 // 	sprintf(String,"gone through\n");
 // 	UART_putstring(String);
-// 	DDRD &= (1<<DDD5);
+	PORTD &= ~(1<<PORTD3);
+	PORTD &= ~(1<<PORTD5);
+ 	DDRD &= ~(1<<DDD3);
+	DDRD |= (1<<DDD5);
 	PORTD |= (1<<PORTD5);
 	PORTD &= ~(1<<PORTD4);
 }
@@ -319,10 +336,10 @@ int main(void)
 			motor_stop_backforth();
 		}
 		
-		if(0)
+		if(PINE & (1<<PINE2))
 		{
 			drive_motor_up();
-		}else if (0)
+		}else if (PINE & (1<<PINE3))
 		{
 			drive_motor_down();
 		}else
