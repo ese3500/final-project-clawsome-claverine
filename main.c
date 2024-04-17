@@ -129,21 +129,21 @@ void setUpADC() {
 // }
 
 // ISR for INT2 (PD7)
-ISR(INT2_vect) {
-	sprintf(String,"ISR PD7\n");
-	UART_putstring(String);
-    // check if PD7 is low (falling edge)
-    if (!(PIND & (1 << PIND7))) {
-		sprintf(String,"PD7 triggered, enter winning mode \n");
-		UART_putstring(String);
-        game_mode = WIN;
-    }
-}
+// ISR(INT2_vect) {
+// 	sprintf(String,"ISR PD7\n");
+// 	UART_putstring(String);
+//     // check if PD7 is low (falling edge)
+//     if (!(PIND & (1 << PIND7))) {
+// 		sprintf(String,"PD7 triggered, enter winning mode \n");
+// 		UART_putstring(String);
+//         game_mode = WIN;
+//     }
+// }
 
 void set_up_rightleft_sensors() {
 // 	// PD0 and PD1 as input, with pull-up resistors enabled
-	DDRD &= ~(1 << PIND0) & ~(1 << PIND1);
-	PORTD |= (1 << PIND0) | (1 << PIND1);
+//  	DDRD &= ~(1 << PIND0) & ~(1 << PIND1);
+//  	PORTD |= (1 << PIND0) | (1 << PIND1);
 
 // 	PCICR |= (1 << PCIE2); // Enable PCINT group 2
 // 	PCMSK2 |= (1 << PCINT16) | (1 << PCINT17); // Enable PD0 (PCINT16) and PD1 (PCINT17)
@@ -193,58 +193,6 @@ void set_up_rightleft_sensors() {
 // // 		right_boundary_hit = 0;
 // // 	}
 // }
-
-void Initialize()
-{
-	// Initialization LCD Screen
-	lcd_init();
-	// Initialization USART Connection for debugging
-	UART_init(BAUD_PRESCALER);
-	// Initialization
-	cli();
-	
-	// making ports output
-// 	DDRC |= (1<<DDC0);
-// 	DDRC |= (1<<DDC1);
-	DDRC |= (1<<DDC2);
-	DDRC |= (1<<DDC3);
-	DDRC |= (1<<DDC4);
-	DDRC |= (1<<DDC5);
-	DDRD |= (1<<DDD3);
-	DDRD |= (1<<DDD4);
-	DDRD |= (1<<DDD5);
-	
-	// pulling all motor ports down initially
-// 	PORTC &= ~(1<<PORTC0); //right
-// 	PORTC &= ~(1<<PORTC1); //left
-	PORTC &= ~(1<<PORTC2); //right
-	PORTC &= ~(1<<PORTC3); //left
-	PORTC &= ~(1<<PORTC4); //up
-	PORTC &= ~(1<<PORTC5); //down
-	PORTD &= ~(1<<PORTD3);
-	PORTD &= ~(1<<PORTD4);
-	PORTD &= ~(1<<PORTD5);
-	
-	
-	// buttons up down
-	
-	DDRE &= ~(1<<DDE2);
-	DDRE &= ~(1<<DDE3);
-	
-	PINE &= ~(1<<PINE2);
-	PINE &= ~(1<<PINE3);
-
-//     set_up_catch_sensors();
- 	set_up_rightleft_sensors();
-	
-	setUpADC();
-	
-	sei();
-	
-// 	UART_init(BAUD_PRESCALER);
-}
-
-
 
 void motor_stop_backforth()
 {
@@ -326,26 +274,26 @@ void drive_motor_back()
 // 	PIND &= ~(1<<PIND5);
 // 	PORTD |= (1<<PORTD5);
 	PORTD |= (1<<PORTD4);
-	PORTD &= ~(1<<PORTD3);
+	PORTD &= ~(1<<PORTD5);
 }
 
 void drive_motor_forth()
 {
 // 	sprintf(String,"gone through\n");
 // 	UART_putstring(String);
-	PORTD &= ~(1<<PORTD3);
-	PORTD &= ~(1<<PORTD5);
- 	DDRD &= ~(1<<DDD3);
-	DDRD |= (1<<DDD5);
+// 	PORTD &= ~(1<<PORTD3);
+// 	PORTD &= ~(1<<PORTD5);
+//  	DDRD &= ~(1<<DDD3);
+// 	DDRD |= (1<<DDD5);
 	PORTD |= (1<<PORTD5);
 	PORTD &= ~(1<<PORTD4);
 }
 
 void drive_motors() {
-    if((adc_value_backforth>950) && !(PIND & (1<<PIND0)))
+    if((adc_value_backforth<50) && !(PIND & (1<<PIND0)))
     {
         drive_motor_right();
-    }else if((adc_value_backforth<50) && !(PIND & (1<<PIND1)))
+    }else if((adc_value_backforth>950) && !(PIND & (1<<PIND1)))
     {
 		drive_motor_left();
     }else
@@ -355,11 +303,11 @@ void drive_motors() {
     
 // 		_delay_ms(500);
     
-    if(adc_value_leftright>950)
+    if(adc_value_leftright<50)
     {
 // 			drive_motor_back();
         drive_motor_back();
-    }else if(adc_value_leftright<50)
+    }else if(adc_value_leftright>950)
     {
 // 			drive_motor_forth();
         drive_motor_forth();
@@ -368,29 +316,127 @@ void drive_motors() {
         motor_stop_backforth();
     }
     
-    if(PINE & (1<<PINE2))
-    {
-        drive_motor_up();
-    }else if (PINE & (1<<PINE3))
+    if(!(PIND & (1<<PIND1)))
     {
         drive_motor_down();
+    }else if (!(PIND & (1<<PIND7)))
+    {
+		drive_motor_up();
     }else
     {
         motor_stop_updown();
     }
 }
 
+void set_up_interrupt() {
+	sprintf(String,"setting up interrupt sensor\n");
+	UART_putstring(String);
+
+	// Enable Pin Change Interrupts for Port E
+	PCICR |= (1 << PCIE2);
+	
+	// Enable Pin Change Interrupts for specific pins in Port E
+	PCMSK2 |= (1 << PCINT24);  // PE0
+	PCMSK2 |= (1 << PCINT25);  // PE1
+	PCMSK2 |= (1 << PCINT26);  // PE2
+	PCMSK2 |= (1 << PCINT27);  // PE3
+
+	sei();  // Enable global interrupts
+
+	sprintf(String,"finish set up interrupt sensor\n");
+	UART_putstring(String);
+}
+
+ISR(PCINT2_vect) {
+// 	sprintf(String,"enter ISR\n");
+// 	UART_putstring(String);
+// 
+//     uint8_t current_pin_state = PINE;
+//     
+//     // Check if PE0 (PCINT24) has changed
+// 	if (current_pin_state & (1 << PINE0)) {
+// 		// PE0 went from low to high (rising edge)
+// 		sprintf(String,"rising edge detected\n");
+// 		UART_putstring(String);
+// 	} else {
+// 		// PE0 went from high to low (falling edge)
+// 		sprintf(String,"falling edge detected\n");
+// 		UART_putstring(String);
+// 	}
+// 
+// 	sprintf(String,"leave ISR\n");
+// 	UART_putstring(String);
+}
+
+
+void Initialize()
+{
+	// Initialization LCD Screen
+	lcd_init();
+	// Initialization USART Connection for debugging
+	UART_init(BAUD_PRESCALER);
+	// Initialization
+	cli();
+	
+	// making ports output
+	// 	DDRC |= (1<<DDC0);
+	// 	DDRC |= (1<<DDC1);
+	DDRC |= (1<<DDC2);
+	DDRC |= (1<<DDC3);
+	DDRC |= (1<<DDC4);
+	DDRC |= (1<<DDC5);
+	DDRD |= (1<<DDD3);
+	DDRD |= (1<<DDD4);
+	DDRD |= (1<<DDD5);
+	
+	// pulling all motor ports down initially
+	// 	PORTC &= ~(1<<PORTC0); //right
+	// 	PORTC &= ~(1<<PORTC1); //left
+	PORTC &= ~(1<<PORTC2); //right
+	PORTC &= ~(1<<PORTC3); //left
+	PORTC &= ~(1<<PORTC4); //up
+	PORTC &= ~(1<<PORTC5); //down
+	PORTD &= ~(1<<PORTD3);
+	PORTD &= ~(1<<PORTD4);
+	PORTD &= ~(1<<PORTD5);
+	
+	
+	// buttons up down
+	
+// 		PORTD &= ~(1<<PORTD0);
+// 		PORTD &= ~(1<<PORTD0);
+	
+		DDRD |= (1<<DDD7);
+		DDRD |= (1<<DDD1);
+		PORTD |= (1<<PORTD7);
+		PORTD |= (1<<PORTD1);
+		DDRD &= ~(1<<DDD7);
+		DDRD &= ~(1<<DDD1);
+	 	PIND |= (1<<PIND7);
+	 	PIND |= (1<<PIND1);
+
+	set_up_interrupt();
+ 	set_up_rightleft_sensors();
+	
+	setUpADC();
+	
+	sei();
+	
+	// 	UART_init(BAUD_PRESCALER);
+}
+
 int main(void)
 {
 	// Initialization
 	Initialize();
-// 	UART_init(BAUD_PRESCALER);
+//  	UART_init(BAUD_PRESCALER);
 	
 	// Debug USART Printing test
 	char String[25];
 	sprintf(String,"Wellcome to Clawesome Claverine \n");
 	UART_putstring(String);
-	
+	_delay_ms(500);
+// 	while(1){}
 	// Code
 	LCD_setScreen(GREEN);
 	LCD_drawBlock(1,19,158,127,BLUE);
