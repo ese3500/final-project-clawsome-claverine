@@ -26,8 +26,8 @@
 volatile uint16_t adc_value_backforth = 500;
 volatile uint16_t adc_value_leftright = 500;
 
-// volatile uint8_t right_boundary_hit = 0;
-// volatile uint8_t left_boundary_hit = 0;
+volatile uint8_t right_boundary_hit = 0;
+volatile uint8_t left_boundary_hit = 0;
 
 // Enumeration for game modes
 enum GameMode {
@@ -140,14 +140,14 @@ void setUpADC() {
 //     }
 // }
 
-void set_up_rightleft_sensors() {
-// 	// PD0 and PD1 as input, with pull-up resistors enabled
-//  	DDRD &= ~(1 << PIND0) & ~(1 << PIND1);
-//  	PORTD |= (1 << PIND0) | (1 << PIND1);
-
-// 	PCICR |= (1 << PCIE2); // Enable PCINT group 2
-// 	PCMSK2 |= (1 << PCINT16) | (1 << PCINT17); // Enable PD0 (PCINT16) and PD1 (PCINT17)
-}
+// void set_up_rightleft_sensors() {
+// // 	// PD0 and PD1 as input, with pull-up resistors enabled
+// //  	DDRD &= ~(1 << PIND0) & ~(1 << PIND1);
+// //  	PORTD |= (1 << PIND0) | (1 << PIND1);
+// 
+// // 	PCICR |= (1 << PCIE2); // Enable PCINT group 2
+// // 	PCMSK2 |= (1 << PCINT16) | (1 << PCINT17); // Enable PD0 (PCINT16) and PD1 (PCINT17)
+// }
 
 // ISR for INT0 (PD0)
 // ISR(PCINT2_vect) {
@@ -290,10 +290,10 @@ void drive_motor_forth()
 }
 
 void drive_motors() {
-    if((adc_value_backforth<50) && !(PIND & (1<<PIND0)))
+    if((adc_value_backforth<50) && !right_boundary_hit)
     {
         drive_motor_right();
-    }else if((adc_value_backforth>950) && !(PIND & (1<<PIND1)))
+    }else if((adc_value_backforth>950) && !left_boundary_hit)
     {
 		drive_motor_left();
     }else
@@ -331,15 +331,20 @@ void drive_motors() {
 void set_up_interrupt() {
 	sprintf(String,"setting up interrupt sensor\n");
 	UART_putstring(String);
+	
+	DDRE &= ~(1<<DDRE0);
+	DDRE &= ~(1<<DDRE1);
+	DDRE &= ~(1<<DDRE2);
+	DDRE &= ~(1<<DDRE3);
 
 	// Enable Pin Change Interrupts for Port E
-	PCICR |= (1 << PCIE2);
+	PCICR |= (1 << PCIE3);
 	
 	// Enable Pin Change Interrupts for specific pins in Port E
-	PCMSK2 |= (1 << PCINT24);  // PE0
-	PCMSK2 |= (1 << PCINT25);  // PE1
-	PCMSK2 |= (1 << PCINT26);  // PE2
-	PCMSK2 |= (1 << PCINT27);  // PE3
+	PCMSK3 |= (1 << PCINT24);  // PE0
+	PCMSK3 |= (1 << PCINT25);  // PE1
+	PCMSK3 |= (1 << PCINT26);  // PE2
+	PCMSK3 |= (1 << PCINT27);  // PE3
 
 	sei();  // Enable global interrupts
 
@@ -347,23 +352,27 @@ void set_up_interrupt() {
 	UART_putstring(String);
 }
 
-ISR(PCINT2_vect) {
-// 	sprintf(String,"enter ISR\n");
-// 	UART_putstring(String);
+ISR(PCINT3_vect) {
+	
 // 
+	sprintf(String,"enter ISR\n");
+	UART_putstring(String);
+
 //     uint8_t current_pin_state = PINE;
-//     
-//     // Check if PE0 (PCINT24) has changed
-// 	if (current_pin_state & (1 << PINE0)) {
-// 		// PE0 went from low to high (rising edge)
-// 		sprintf(String,"rising edge detected\n");
+    
+    // Check if PE0 (PCINT24) has changed
+	if (PINE & (1 << PINE0)) {
+		// PE0 went from low to high (rising edge)
+		left_boundary_hit = 1;
+// 		sprintf(String,"%u \n", left_boundary_hit);
 // 		UART_putstring(String);
-// 	} else {
-// 		// PE0 went from high to low (falling edge)
-// 		sprintf(String,"falling edge detected\n");
+	} else {
+		// PE0 went from high to low (falling edge)
+		left_boundary_hit = 0;
+// 		sprintf(String,"falling  %u \n", left_boundary_hit);
 // 		UART_putstring(String);
-// 	}
-// 
+	}
+
 // 	sprintf(String,"leave ISR\n");
 // 	UART_putstring(String);
 }
@@ -414,9 +423,10 @@ void Initialize()
 		DDRD &= ~(1<<DDD1);
 	 	PIND |= (1<<PIND7);
 	 	PIND |= (1<<PIND1);
+		 
 
 	set_up_interrupt();
- 	set_up_rightleft_sensors();
+//  	set_up_rightleft_sensors();
 	
 	setUpADC();
 	
