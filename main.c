@@ -306,11 +306,12 @@ void drive_motors() {
     if(adc_value_leftright<50)
     {
 // 			drive_motor_back();
-        drive_motor_back();
+		drive_motor_forth();
+        
     }else if(adc_value_leftright>950)
     {
 // 			drive_motor_forth();
-        drive_motor_forth();
+		drive_motor_back();
         }else
     {
         motor_stop_backforth();
@@ -352,6 +353,79 @@ void set_up_interrupt() {
 	UART_putstring(String);
 }
 
+void setup_sound()
+{
+	DDRD |= (1 << PIND2);
+	PORTD |= (1<<PORTD2);
+
+	// Set Timer3 in Fast PWM mode, non-inverted
+	TCCR3A |= (1 << COM3B1);
+	TCCR3A |= (1 << COM3A1);
+	TCCR3A &= ~(1<<WGM31);
+	TCCR3A |= (1<<WGM30);
+	TCCR3B &= ~(1 << WGM32);
+	TCCR3B |= (1 << WGM33);
+	TCCR3B |= (1 << CS30);  // No prescaling
+	TCCR3B |= (1 << CS31);
+	TCCR3B &= ~(1 << CS32);
+
+	// Set the duty cycle (OCR3B value). For a 50% duty cycle square wave,
+	// set this to half the maximum counter value.
+	OCR3A = 127;
+	OCR3B = 0;
+}
+
+void play_sound(char tone)
+{	
+	switch(tone)
+	{
+		case 'C':
+			OCR3A = 239;
+			OCR3B = OCR3A/2;
+			break;
+		case 'D':
+			OCR3A = 213;
+			OCR3B = OCR3A/2;
+			break;
+		case 'E':
+			OCR3A = 190;
+			OCR3B = OCR3A/2;
+			break;
+		case 'F':
+			OCR3A = 179;
+			OCR3B = OCR3A/2;
+			break;
+		case 'G':
+			OCR3A = 159;
+			OCR3B = OCR3A/2;
+			break;
+		case 'A':
+			OCR3A = 142;
+			OCR3B = OCR3A/2;
+			break;
+		case 'B':
+			OCR3A = 127;
+			OCR3B = OCR3A/2;
+			break;
+		default:
+			OCR3A = 127;
+			OCR3B = 0;
+			break;
+	}
+	
+	_delay_ms(125);
+	OCR3B = 0;
+	
+//	247 = 512
+//	C 523 = 239
+//	D 587 = 213
+//  E 659 = 190
+//  F 698 = 179
+//  G 784 = 159
+//  A 880 = 142
+//  B 988 = 127
+}
+
 ISR(PCINT3_vect) {
 	
 // 
@@ -372,6 +446,18 @@ ISR(PCINT3_vect) {
 // 		sprintf(String,"falling  %u \n", left_boundary_hit);
 // 		UART_putstring(String);
 	}
+	
+	if (PINE & (1 << PINE1)) {
+		// PE0 went from low to high (rising edge)
+		right_boundary_hit = 1;
+		// 		sprintf(String,"%u \n", left_boundary_hit);
+		// 		UART_putstring(String);
+		} else {
+		// PE0 went from high to low (falling edge)
+		right_boundary_hit = 0;
+		// 		sprintf(String,"falling  %u \n", left_boundary_hit);
+		// 		UART_putstring(String);
+	}
 
 // 	sprintf(String,"leave ISR\n");
 // 	UART_putstring(String);
@@ -386,6 +472,8 @@ void Initialize()
 	UART_init(BAUD_PRESCALER);
 	// Initialization
 	cli();
+	
+	setup_sound();
 	
 	// making ports output
 	// 	DDRC |= (1<<DDC0);
@@ -440,6 +528,64 @@ int main(void)
 	// Initialization
 	Initialize();
 //  	UART_init(BAUD_PRESCALER);
+
+	while (0)
+	{
+// 		char notes[] = {
+// 			'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D',
+// 			'A', 'C', 'D', 'D', 'D', 'E', 'F', 'F', 'F', 'G',
+// 			'E', 'E', 'D', 'C', 'C', 'D',
+// 			'A', 'C', 'D', 'D', 'D', 'E', 'F', 'F', 'F', 'G',
+// 			'E', 'E', 'D', 'C', 'D',
+// 			'A', 'C', 'D', 'D', 'D', 'F', 'G', 'G', 'G', 'A',
+// 			'A', '#', 'A', '#', 'A', 'G', 'A',
+// 			'D', 'D', 'E', 'F', 'F', 'F', 'G',
+// 			'A', 'D', 'D', 'F', 'E', 'E', 'F', 'D',
+// 			'E', 'A', 'C', 'D', 'D', 'D', 'E', 'F', 'F', 'F', 'G',
+// 			'E', 'E', 'D', 'C', 'C', 'D',
+// 			'A', 'C', 'D', 'D', 'D', 'E', 'F', 'F', 'F', 'G',
+// 			'E', 'E', 'D', 'C', 'D',
+// 			'A', 'C', 'D', 'D', 'D', 'F', 'G', 'G', 'G', 'A',
+// 			'A', '#', 'A', '#', 'A', 'G',
+// 			'A', 'D', 'D', 'E', 'F', 'F', 'G',
+// 			'A', 'D', 'D', 'F', 'E', 'E', 'F', 'D',
+// 			'D', 'D', 'E', 'F', 'F', 'F', 'G',
+// 			'A', 'F', 'F', 'D', 'A',
+// 			'D', 'N', 'D', 'D', 'D', 'D', 'D', 'P',
+// 			'P', 'G', 'G', 'M', 'G', 'G', 'R',
+// 			'D', 'N', 'D', 'D', 'R', 'D', 'P',
+// 			'P', 'G', 'G', 'M', 'G', 'G', 'R'			//Pirrates of the carrebian
+			
+		char notes[] = {
+			'G', 'G', 'G', '#', 'E', 'E', 'F', 'D', '#', 'B', 'B', 'C', 'A', '#',
+			'A', 'A', 'B', 'G', '#', 'D', 'D', 'E', 'C', '#', 'B', 'B', 'C', 'A', '#',
+			'G', 'G', 'F', 'D', '#', 'E', 'E', 'D', 'C', '#', 'A', 'A', 'B', 'G', '#',
+			'D', 'D', 'E', 'C', '#', 'B', 'B', 'A', '#', 'G', 'G', 'F', 'D', '#',
+			'E', 'E', 'D', 'C', '#', 'A', 'A', 'G', '#', 'G', 'G', 'F', 'D', '#',
+			'E', 'E', 'D', 'C', '#', 'A', 'A', 'G', '#', 'G', 'G', 'F', 'D', '#',
+			'E', 'E', 'D', 'C', '#', 'A', 'A', 'G', '#', 'G', 'G', 'F', 'D', '#',
+			'E', 'E', 'D', 'C', '#', 'A', 'A', 'B', 'G', '#', 'D', 'D', 'E', 'C', '#',
+			'B', 'B', 'A', '#', 'G', 'G', 'F', 'D', '#', 'E', 'E', 'D', 'C', '#',
+			'A', 'A', 'B', 'G', '#', 'D', 'D', 'E', 'C', '#', 'B', 'B', 'A', '#',
+			'0'  // Null-terminating character
+		}; //Mozart
+
+// 		play_sound('A');
+// 		_delay_ms(250);
+// 		play_sound('B');
+// 		_delay_ms(250);
+		uint8_t i = 0;
+		while(1)
+		{
+			play_sound(notes[i]);
+			_delay_ms(125);
+			if(notes[i]=='0')
+			{
+				i = 0;
+			}
+			++i;
+		}
+	}
 	
 	// Debug USART Printing test
 	char String[25];
