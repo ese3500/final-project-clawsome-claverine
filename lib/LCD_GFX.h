@@ -20,6 +20,7 @@
 #define CYAN      0x07FF
 #define MAGENTA   0xF81F
 #define YELLOW    0xFFE0
+#define VIOLETT	  0x7C1F
 
 uint16_t rgb565(uint8_t red, uint8_t green, uint8_t blue);
 void LCD_drawPixel(uint8_t x, uint8_t y, uint16_t color);
