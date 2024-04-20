@@ -29,18 +29,50 @@ volatile uint16_t adc_value_leftright = 500;
 volatile uint8_t right_boundary_hit = 0;
 volatile uint8_t left_boundary_hit = 0;
 
+char *string;
+
 // Enumeration for game modes
-enum GameMode {
-    SLEEP,
-	PLAY,
-    WIN,
-    LOSS
-};
+// enum GameMode {
+//     SLEEP,
+// 	PLAY,
+//     WIN,
+//     LOSS
+// };
 
 // Global variable to store the current game mode
-enum GameMode game_mode = SLEEP;
+/*enum GameMode game_mode = SLEEP;*/
 
 #include <stdio.h>
+
+char *countdown[] = {
+	"60.0", "59.5", "59.0", "58.5", "58.0", "57.5", "57.0", "56.5", "56.0", "55.5",
+	"55.0", "54.5", "54.0", "53.5", "53.0", "52.5", "52.0", "51.5", "51.0", "50.5",
+	"50.0", "49.5", "49.0", "48.5", "48.0", "47.5", "47.0", "46.5", "46.0", "45.5",
+	"45.0", "44.5", "44.0", "43.5", "43.0", "42.5", "42.0", "41.5", "41.0", "40.5",
+	"40.0", "39.5", "39.0", "38.5", "38.0", "37.5", "37.0", "36.5", "36.0", "35.5",
+	"35.0", "34.5", "34.0", "33.5", "33.0", "32.5", "32.0", "31.5", "31.0", "30.5",
+	"30.0", "29.5", "29.0", "28.5", "28.0", "27.5", "27.0", "26.5", "26.0", "25.5",
+	"25.0", "24.5", "24.0", "23.5", "23.0", "22.5", "22.0", "21.5", "21.0", "20.5",
+	"20.0", "19.5", "19.0", "18.5", "18.0", "17.5", "17.0", "16.5", "16.0", "15.5",
+	"15.0", "14.5", "14.0", "13.5", "13.0", "12.5", "12.0", "11.5", "11.0", "10.5",
+	"10.0", "09.5", "09.0", "08.5", "08.0", "07.5", "07.0", "06.5", "06.0", "05.5",
+	"05.0", "04.5", "04.0", "03.5", "03.0", "02.5", "02.0", "01.5", "01.0", "00.5",
+	"00.0"
+};
+
+char mozart[] = {
+	'G', 'G', 'G', '#', 'E', 'E', 'F', 'D', '#', 'B', 'B', 'C', 'A', '#',
+	'A', 'A', 'B', 'G', '#', 'D', 'D', 'E', 'C', '#', 'B', 'B', 'C', 'A', '#',
+	'G', 'G', 'F', 'D', '#', 'E', 'E', 'D', 'C', '#', 'A', 'A', 'B', 'G', '#',
+	'D', 'D', 'E', 'C', '#', 'B', 'B', 'A', '#', 'G', 'G', 'F', 'D', '#',
+	'E', 'E', 'D', 'C', '#', 'A', 'A', 'G', '#', 'G', 'G', 'F', 'D', '#',
+	'E', 'E', 'D', 'C', '#', 'A', 'A', 'G', '#', 'G', 'G', 'F', 'D', '#',
+	'E', 'E', 'D', 'C', '#', 'A', 'A', 'G', '#', 'G', 'G', 'F', 'D', '#',
+	'E', 'E', 'D', 'C', '#', 'A', 'A', 'B', 'G', '#', 'D', 'D', 'E', 'C', '#',
+	'B', 'B', 'A', '#', 'G', 'G', 'F', 'D', '#', 'E', 'E', 'D', 'C', '#',
+	'A', 'A', 'B', 'G', '#', 'D', 'D', 'E', 'C', '#', 'B', 'B', 'A', '#',
+	'0'  // Null-terminating character
+}; //Mozart
 
 volatile char String[25]; //printing out message
 
@@ -413,9 +445,8 @@ void play_sound(char tone)
 			break;
 	}
 	
-	_delay_ms(125);
-	OCR3B = 0;
-	
+// 	_delay_ms(125);
+// 	OCR3B = 	
 //	247 = 512
 //	C 523 = 239
 //	D 587 = 213
@@ -521,6 +552,196 @@ void Initialize()
 	sei();
 	
 	// 	UART_init(BAUD_PRESCALER);
+}
+
+long_delay(uint8_t duration)
+{
+	for(uint8_t i=0;i<duration;++i)
+	{
+		_delay_ms(500);
+	}
+}
+
+draw_frame()
+{
+	LCD_setScreen(BLACK);
+	string = "CLAWSOME CLAVERINE";
+	LCD_drawString(60, 7, string, GREEN, BLACK);
+}
+
+void loading_screen()
+{
+	LCD_setScreen(YELLOW);
+	char *string;
+	string = "Loading...";
+	LCD_drawString(10, 5, string, BLUE, YELLOW);
+	for(uint8_t i = 0; i<14;++i)
+	{
+		LCD_drawBlock(10+i*10,20,15+i*10,114,BLUE);
+		_delay_ms(200);
+	}
+}
+
+void start_countdown(uint16_t front, uint16_t back)
+{
+	LCD_drawBlock(1,19,158,127,back);
+	string = "Game Starts in";
+	LCD_drawString(60, 55, string, front, back);
+	string = "3.0";
+	_delay_ms(500);
+	LCD_drawString(60, 55, string, front, back);
+	string = "2.5";
+	_delay_ms(500);
+	LCD_drawString(60, 55, string, front, back);
+	string = "2.0";
+	_delay_ms(500);
+	LCD_drawString(60, 55, string, front, back;
+	string = "1.5";
+	_delay_ms(500);
+	LCD_drawString(60, 55, string, front, back);
+	string = "1.0";
+	_delay_ms(500);
+	LCD_drawString(60, 55, string, front, back);
+	_delay_ms(500);
+	string = "0.5";
+	LCD_drawString(60, 55, string, front, back);
+	_delay_ms(500);
+	string = "Goo";
+	LCD_drawString(60, 55, string, front, back);
+	_delay_ms(500);
+}
+
+void loosing_game()
+{
+	draw_frame();
+	LCD_drawBlock(1,19,158,127,RED);
+	string = "You loose";
+	LCD_drawString(60, 55, string, BLACK, RED);
+}
+
+void play_easy()
+{
+	LCD_drawBlock(1,19,158,127,MAGENTA);
+	string = "EASY MODE";
+	LCD_drawString(60, 45, string, BLACK, MAGENTA);
+	string = "down";
+	LCD_drawString(40, 55, string, YELLOW, MAGENTA);
+	string = "up";
+	LCD_drawString(80, 55, string, BLUE, MAGENTA);
+	
+	uint8_t l = 0;
+	
+	for(uint8_t j =0;j<121;0)
+	{
+		string = countdown[j];
+		LCD_drawString(60, 100, string, BLUE, MAGENTA);
+		
+		for(uint8_t i=0;i<2;++i)
+		{
+			play_sound(mozart[l]);
+			if(mozart[l]=='0')
+			{
+				l=0;
+			}else
+			{
+				++l;
+			}
+			for(uint8_t k=0;k<255;++k)
+			{
+				if((adc_value_backforth<50) && !right_boundary_hit)
+				{
+					drive_motor_right();
+				}else if((adc_value_backforth>950) && !left_boundary_hit)
+				{
+					drive_motor_left();
+				}else
+				{
+					motor_stop_rightleft();
+				}
+				if(adc_value_leftright<50)
+				{
+					drive_motor_forth();
+					
+				}else if(adc_value_leftright>950)
+				{
+					drive_motor_back();
+				}else
+				{
+					motor_stop_backforth();
+				}
+				if(!(PIND & (1<<PIND1)))
+				{
+					drive_motor_down();
+				}else if (!(PIND & (1<<PIND7)))
+				{
+					drive_motor_up();
+				}else
+				{
+					motor_stop_updown();
+				}
+			}
+		}
+	}
+	loosing_game();
+}
+
+play_machine()
+{
+	draw_frame();
+	
+	while(0)
+	{
+		LCD_drawBlock(1,19,158,127,BLACK);
+		string = "Welcome to";
+		LCD_drawString(60, 45, string, WHITE, BLACK);
+		string = "Clawsome Claverine";
+		LCD_drawString(60, 55, string, WHITE, BLACK);
+		string = "$ Insert coin to play $";
+		LCD_drawString(60, 65, string, WHITE, BLACK);
+	}
+	
+	while(0)
+	{
+		LCD_drawBlock(1,19,158,127,WHITE);
+		string = "Choose Mode";
+		LCD_drawString(60, 45, string, BLACK, WHITE);
+		string = "EASY";
+		LCD_drawString(60, 55, string, YELLOW, WHITE);
+		string = "CRAZY";
+		LCD_drawString(60, 65, string, BLUE, WHITE);
+		string = "SURRENDER";
+		LCD_drawString(60, 75, string, RED, WHITE);
+		string = "(And donate money to charity)";
+		LCD_drawString(60, 83, string, RED, WHITE);
+		string = "(Press button with given color)";
+		LCD_drawString(60, 135, string, BLACK, WHITE);
+		
+		if(0) // yellow
+		{
+			loading_screen();
+			draw_frame();
+			start_countdown(BLACK, MAGENTA);
+			play_easy();
+		}else if(0) // blue
+		{
+			loading_screen();
+		}else if(0) // red
+		{
+			LCD_drawBlock(1,19,158,127,CYAN);
+			string = "THANK YOU";
+			LCD_drawString(60, 55, string, BLACK, CYAN);
+			string = "Enjoy your day!!";
+			LCD_drawString(60, 65, string, BLACK, CYAN);
+			long_delay(4);
+		}
+	}
+	
+	
+	
+	
+	
+	
+// 	LCD_drawBlock(1,19,158,127,BLACK);
 }
 
 int main(void)
