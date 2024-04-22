@@ -28,8 +28,6 @@ volatile uint16_t adc_value_leftright = 500;
 
 volatile uint8_t right_boundary_hit = 0;
 volatile uint8_t left_boundary_hit = 0;
-volatile uint8_t red_button_pressed = 0;
-volatile uint8_t object_detected = 0;
 
 char *string;
 
@@ -409,12 +407,6 @@ void setup_sound()
 	OCR3B = 0;
 }
 
-void stop_sound()
-{
-	OCR3A = 127;
-	OCR3B = 0;
-}
-
 void play_sound(char tone)
 {	
 	switch(tone)
@@ -468,8 +460,8 @@ void play_sound(char tone)
 ISR(PCINT3_vect) {
 	
 // 
-// 	sprintf(String,"enter ISR\n");
-// 	UART_putstring(String);
+	sprintf(String,"enter ISR\n");
+	UART_putstring(String);
 
 //     uint8_t current_pin_state = PINE;
     
@@ -494,18 +486,6 @@ ISR(PCINT3_vect) {
 		} else {
 		// PE0 went from high to low (falling edge)
 		right_boundary_hit = 0;
-		// 		sprintf(String,"falling  %u \n", left_boundary_hit);
-		// 		UART_putstring(String);
-	}
-	
-	if (PINE & (1 << PINE2)) {
-		// PE0 went from low to high (rising edge)
-		red_button_pressed = 1;
-// 				sprintf(String,"%u \n", left_boundary_hit);
-// 		 		UART_putstring(String);
-		} else {
-		// PE0 went from high to low (falling edge)
-		red_button_pressed = 0;
 		// 		sprintf(String,"falling  %u \n", left_boundary_hit);
 		// 		UART_putstring(String);
 	}
@@ -563,10 +543,6 @@ void Initialize()
 	 	PIND |= (1<<PIND7);
 	 	PIND |= (1<<PIND1);
 		 
-		 // red button
-// 		DDRB &= ~(1<<DDB4);
-// 		PINB |= (1<<PINB4);
-		 
 
 	set_up_interrupt();
 //  	set_up_rightleft_sensors();
@@ -590,7 +566,7 @@ draw_frame()
 {
 	LCD_setScreen(BLACK);
 	string = "CLAWSOME CLAVERINE";
-	LCD_drawString(34, 7, string, GREEN, BLACK);
+	LCD_drawString(60, 7, string, GREEN, BLACK);
 }
 
 void loading_screen()
@@ -610,28 +586,28 @@ void start_countdown(uint16_t front, uint16_t back)
 {
 	LCD_drawBlock(1,19,158,127,back);
 	string = "Game Starts in";
-	LCD_drawString(55, 55, string, front, back);
+	LCD_drawString(60, 55, string, front, back);
 	string = "3.0";
 	_delay_ms(500);
-	LCD_drawString(55, 65, string, front, back);
+	LCD_drawString(60, 55, string, front, back);
 	string = "2.5";
 	_delay_ms(500);
-	LCD_drawString(55, 65, string, front, back);
+	LCD_drawString(60, 55, string, front, back);
 	string = "2.0";
 	_delay_ms(500);
-	LCD_drawString(55, 65, string, front, back);
+	LCD_drawString(60, 55, string, front, back;
 	string = "1.5";
 	_delay_ms(500);
-	LCD_drawString(55, 65, string, front, back);
+	LCD_drawString(60, 55, string, front, back);
 	string = "1.0";
 	_delay_ms(500);
-	LCD_drawString(55, 65, string, front, back);
+	LCD_drawString(60, 55, string, front, back);
 	_delay_ms(500);
 	string = "0.5";
-	LCD_drawString(55, 65, string, front, back);
+	LCD_drawString(60, 55, string, front, back);
 	_delay_ms(500);
 	string = "Goo";
-	LCD_drawString(55, 65, string, front, back);
+	LCD_drawString(60, 55, string, front, back);
 	_delay_ms(500);
 }
 
@@ -639,71 +615,28 @@ void loosing_game()
 {
 	draw_frame();
 	LCD_drawBlock(1,19,158,127,RED);
-	string = "You loose!";
+	string = "You loose";
 	LCD_drawString(60, 55, string, BLACK, RED);
-	play_sound('E');
-	_delay_ms(250);
-	stop_sound();
-	_delay_ms(250);
-	play_sound('F');
-	_delay_ms(250);
-	stop_sound();
-	_delay_ms(250);
-	play_sound('G');
-	_delay_ms(250);
-	stop_sound();
-	_delay_ms(250);
-	play_sound('B');
-	_delay_ms(500);
-	_delay_ms(250);
-	stop_sound();
-	_delay_ms(250);
-}
-
-winning_game()
-{
-	draw_frame();
-	LCD_drawBlock(1,19,158,127,RED);
-	string = "You win!";
-	LCD_drawString(60, 55, string, BLACK, RED);
-	play_sound('G');
-	_delay_ms(250);
-	stop_sound();
-	_delay_ms(250);
-	play_sound('G');
-	_delay_ms(250);
-	stop_sound();
-	_delay_ms(250);
-	play_sound('G');
-	_delay_ms(250);
-	stop_sound();
-	_delay_ms(250);
-	play_sound('D');
-	_delay_ms(500);
-	_delay_ms(250);
-	stop_sound();
-	_delay_ms(250);
 }
 
 void play_easy()
 {
 	LCD_drawBlock(1,19,158,127,MAGENTA);
 	string = "EASY MODE";
-	LCD_drawString(45, 45, string, BLACK, MAGENTA);
+	LCD_drawString(60, 45, string, BLACK, MAGENTA);
 	string = "down";
 	LCD_drawString(40, 55, string, YELLOW, MAGENTA);
 	string = "up";
 	LCD_drawString(80, 55, string, BLUE, MAGENTA);
-
 	
 	uint8_t l = 0;
 	
-	for(uint8_t j =0;j<121 && !object_detected;++j)
+	for(uint8_t j =0;j<121;0)
 	{
 		string = countdown[j];
 		LCD_drawString(60, 100, string, BLUE, MAGENTA);
 		
-		for(uint8_t i=0;i<2 && !object_detected;++i)
+		for(uint8_t i=0;i<2;++i)
 		{
 			play_sound(mozart[l]);
 			if(mozart[l]=='0')
@@ -713,7 +646,7 @@ void play_easy()
 			{
 				++l;
 			}
-			for(uint16_t k=0;k<45535 && !object_detected;++k)
+			for(uint8_t k=0;k<255;++k)
 			{
 				if((adc_value_backforth<50) && !right_boundary_hit)
 				{
@@ -746,171 +679,60 @@ void play_easy()
 				{
 					motor_stop_updown();
 				}
-				if(!red_button_pressed)
-				{
-					object_detected = 1;
-				}
 			}
 		}
 	}
-	stop_sound();
-	if(object_detected)
-	{
-		winning_game();
-	}else
-	{
-		loosing_game();
-	}
-	object_detected = 0;
-}
-
-void play_hard()
-{
-	LCD_drawBlock(1,19,158,127,MAGENTA);
-	string = "CRAZY MODE";
-	LCD_drawString(45, 45, string, BLACK, MAGENTA);
-
-	
-	uint8_t l = 0;
-	
-	for(uint8_t j =0;j<121 && !object_detected;++j)
-	{
-		string = countdown[j];
-		LCD_drawString(60, 100, string, BLUE, MAGENTA);
-		
-		for(uint8_t i=0; i<2 && !object_detected ;++i)
-		{
-			play_sound(mozart[l]);
-			if(mozart[l]=='0')
-			{
-				l=0;
-			}else
-			{
-				++l;
-			}
-			for(uint16_t k=0; k<5000 && !object_detected;++k)
-			{
-				if((adc_value_backforth<50) && !right_boundary_hit)
-				{
-					drive_motor_up();
-				}else if((adc_value_backforth>950) && !left_boundary_hit)
-				{
-					drive_motor_down();
-					
-				}else
-				{
-					motor_stop_updown();
-				}
-				if(adc_value_leftright<50)
-				{
-					drive_motor_right();
-					
-				}else if(adc_value_leftright>950)
-				{
-					drive_motor_left();
-					
-				}else
-				{
-					motor_stop_rightleft();
-				}
-				if(!(PIND & (1<<PIND1)))
-				{
-					drive_motor_forth();
-				}else if (!(PIND & (1<<PIND7)))
-				{
-					drive_motor_back();
-				}else
-				{
-					motor_stop_backforth();
-				}
-				if(!red_button_pressed)
-				{
-					object_detected = 1;
-				}
-			}
-		}
-	}
-	stop_sound();
-	if(object_detected)
-	{
-		winning_game();
-	}else
-	{
-		loosing_game();
-	}
-	object_detected = 0;
+	loosing_game();
 }
 
 play_machine()
 {
 	draw_frame();
 	
-	if(1)
+	while(0)
 	{
 		LCD_drawBlock(1,19,158,127,BLACK);
 		string = "Welcome to";
-		LCD_drawString(50, 45, string, WHITE, BLACK);
+		LCD_drawString(60, 45, string, WHITE, BLACK);
 		string = "Clawsome Claverine";
-		LCD_drawString(34, 55, string, WHITE, BLACK);
+		LCD_drawString(60, 55, string, WHITE, BLACK);
 		string = "$ Insert coin to play $";
-		LCD_drawString(20, 65, string, WHITE, BLACK);
+		LCD_drawString(60, 65, string, WHITE, BLACK);
 	}
 	
-	while(!red_button_pressed);
-	while(1)
+	while(0)
 	{
-		if(!red_button_pressed)
-		{
-			_delay_ms(10);
-			if(!red_button_pressed)
-			{
-				break;
-			}
-		}
-	}
-	_delay_ms(500);
-	
-	if(1)
-	{
-		LCD_drawBlock(1,19,158,127,BLACK);
+		LCD_drawBlock(1,19,158,127,WHITE);
 		string = "Choose Mode";
-		LCD_drawString(50, 45, string, WHITE, BLACK);
+		LCD_drawString(60, 45, string, BLACK, WHITE);
 		string = "EASY";
-		LCD_drawString(55, 55, string, YELLOW, BLACK);
+		LCD_drawString(60, 55, string, YELLOW, WHITE);
 		string = "CRAZY";
-		LCD_drawString(55, 65, string, BLUE, BLACK);
+		LCD_drawString(60, 65, string, BLUE, WHITE);
 		string = "SURRENDER";
-		LCD_drawString(52, 75, string, RED, BLACK);
+		LCD_drawString(60, 75, string, RED, WHITE);
 		string = "(And donate money to charity)";
-		LCD_drawString(5, 83, string, RED, BLACK);
+		LCD_drawString(60, 83, string, RED, WHITE);
 		string = "(Press button with given color)";
-		LCD_drawString(5, 100, string, BLACK, BLACK);
-		while(1)
+		LCD_drawString(60, 135, string, BLACK, WHITE);
+		
+		if(0) // yellow
 		{
-			if(!(PIND & (1<<PIND7))) // yellow
-			{
-				loading_screen();
-				draw_frame();
-				start_countdown(BLACK, MAGENTA);
-				play_easy();
-				break;
-			}else if(!(PIND & (1<<PIND1))) // blue
-			{
-				loading_screen();
-				draw_frame();
-				start_countdown(BLACK, MAGENTA);
-				play_hard();
-				break;
-			}else if(!red_button_pressed) // red
-			{
-				LCD_drawBlock(1,19,158,127,CYAN);
-				string = "THANK YOU";
-				LCD_drawString(60, 55, string, BLACK, CYAN);
-				string = "Enjoy your day!!";
-				LCD_drawString(50, 65, string, BLACK, CYAN);
-				long_delay(4);
-				break;
-			}
+			loading_screen();
+			draw_frame();
+			start_countdown(BLACK, MAGENTA);
+			play_easy();
+		}else if(0) // blue
+		{
+			loading_screen();
+		}else if(0) // red
+		{
+			LCD_drawBlock(1,19,158,127,CYAN);
+			string = "THANK YOU";
+			LCD_drawString(60, 55, string, BLACK, CYAN);
+			string = "Enjoy your day!!";
+			LCD_drawString(60, 65, string, BLACK, CYAN);
+			long_delay(4);
 		}
 	}
 	
@@ -926,12 +748,9 @@ int main(void)
 {
 	// Initialization
 	Initialize();
-	LCD_setScreen(BLUE);
+	LCD_setScreen(GREEN);
+	while(1);
 //  	UART_init(BAUD_PRESCALER);
-	while(1)
-	{
-		play_machine();
-	}
 
 	while (0)
 	{
@@ -972,7 +791,7 @@ int main(void)
 			'B', 'B', 'A', '#', 'G', 'G', 'F', 'D', '#', 'E', 'E', 'D', 'C', '#',
 			'A', 'A', 'B', 'G', '#', 'D', 'D', 'E', 'C', '#', 'B', 'B', 'A', '#',
 			'0'  // Null-terminating character
-			}; //Mozart
+		}; //Mozart
 
 // 		play_sound('A');
 // 		_delay_ms(250);
@@ -999,53 +818,53 @@ int main(void)
 // 	while(1){}
 	// Code
 	LCD_setScreen(GREEN);
-	LCD_drawBlock(1,19,158,127,BLUE);
+	LCD_drawBlock(1,19,158,127,RED);
 	sprintf(String,"gone through\n");
 	UART_putstring(String);
 
     /* Set game mode, this could be an ISR from a button press, but 
 	 *for now this is hardcoded to be PLAY mode */
-// 	game_mode = PLAY;
-// 	sprintf(String,"setting game mode to PLAY \n");
-// 	UART_putstring(String);
+	game_mode = PLAY;
+	sprintf(String,"setting game mode to PLAY \n");
+	UART_putstring(String);
 	
 	while (1)
 	{
 		drive_motors();
 	}
 
-// 	while(1)
-// 	{	
-// 		// Check the current game mode and perform actions accordingly
-// 		switch (game_mode) {
-// 			case SLEEP:
-// 				sprintf(String,"SLEEP mode\n");
-// 				UART_putstring(String);
-// 				break;
-// 			case PLAY:
-// 				sprintf(String,"PLAY mode, driving motors\n");
-// 				UART_putstring(String);
-// 				drive_motors();
-// 				break;
-// 			case WIN:
-// 				sprintf(String,"WIN mode starts, turn on LED lights\n");
-// 				UART_putstring(String);
-// 				/* Turn on LED lights */
-// 				_delay_ms(500);
-// 				sprintf(String,"WIN mode ends, turn off LED lights\n");
-// 				UART_putstring(String);
-// 				sprintf(String,"Setting game mode to SLEEP\n");
-// 				UART_putstring(String);
-// 				game_mode = SLEEP;
-// 				break;
-// 			case LOSS:
-// 				sprintf(String,"LOSS mode\n");
-// 				UART_putstring(String);
-// 				break;
-// 			default:	
-// 				break;
-// 		}
-	/*}*/
+	while(1)
+	{	
+		// Check the current game mode and perform actions accordingly
+		switch (game_mode) {
+			case SLEEP:
+				sprintf(String,"SLEEP mode\n");
+				UART_putstring(String);
+				break;
+			case PLAY:
+				sprintf(String,"PLAY mode, driving motors\n");
+				UART_putstring(String);
+				drive_motors();
+				break;
+			case WIN:
+				sprintf(String,"WIN mode starts, turn on LED lights\n");
+				UART_putstring(String);
+				/* Turn on LED lights */
+				_delay_ms(500);
+				sprintf(String,"WIN mode ends, turn off LED lights\n");
+				UART_putstring(String);
+				sprintf(String,"Setting game mode to SLEEP\n");
+				UART_putstring(String);
+				game_mode = SLEEP;
+				break;
+			case LOSS:
+				sprintf(String,"LOSS mode\n");
+				UART_putstring(String);
+				break;
+			default:	
+				break;
+		}
+	}
 	
 	while (1);
 }
