@@ -13,7 +13,8 @@
   <img src="p3.png" width="32%" />
 </p>
 
-<h1 align="center">final-project-skeleton</h3>
+<!-- <h1 align="center">final-project-skeleton</h3> -->
+### final-project-skeleton
 
     * Team Name: Clawsome Claverine
     * Team Members: August Fu & Darian Mettler
