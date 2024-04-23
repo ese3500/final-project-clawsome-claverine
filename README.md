@@ -14,15 +14,15 @@
 </p>
 
 <!-- <h1 align="center">final-project-skeleton</h3> -->
-### final-project-skeleton
-
+<!-- ### final-project-skeleton -->
+<h3 align="center">final-project-skeleton</h3>
     * Team Name: Clawsome Claverine
     * Team Members: August Fu & Darian Mettler
     * Github Repository URL: https://github.com/ese3500/final-project-clawsome-claverine
     * Github Pages Website URL: https://ese3500.github.io/final-project-clawsome-claverine/
     * Description of hardware: ATmega328PB, Windows on Arm 11 (Surface X Pro)
 
-<h1 align="center">Proposal</h2>
+<h2 align="center">Proposal</h2>
 
 ### 1. Abstract
 
@@ -175,7 +175,7 @@ This section is to help guide your progress over the next few weeks. Feel free t
 
 Add your slides to the Final Project Proposal slide deck in the Google Drive.
 
-<h1 align="center">Final Project Report</h2>
+<h2 align="center">Final Project Report</h2>
 
 Don't forget to make the GitHub pages public website!
 If you’ve never made a Github pages website before, you can follow this webpage (though, substitute your final project repository for the Github username one in the quickstart guide):  <https://docs.github.com/en/pages/quickstart>
@@ -186,7 +186,7 @@ If you’ve never made a Github pages website before, you can follow this webpag
 
 ### 2. Images
 
-<h1 align="center">Teardown, Testing</h6>
+<h4 align="center">Teardown, Testing</h4>
 
 <p float="center">
   <img src="p0.png" width="24%" />
@@ -211,7 +211,7 @@ Based on your quantified system performance, comment on how you achieved or fell
 
 Reflect on your project. Some questions to consider: What did you learn from it? What went well? What accomplishments are you proud of? What did you learn/gain from this experience? Did you have to change your approach? What could have been done differently? Did you encounter obstacles that you didn’t anticipate? What could be a next step for this project?
 
-<h1 align="center">References</h2>
+<h2 align="center">References</h2>
 
 Fill in your references here as you work on your proposal and final submission. Describe any libraries used here.
 
