@@ -887,7 +887,10 @@ play_machine()
 		LCD_drawString(5, 100, string, BLACK, BLACK);
 		while(1)
 		{
-			if(!(PIND & (1<<PIND7))) // yellow
+			if(!(PIND & (1<<PIND7)) || !(PIND & (1<<PIND1)) || !red_button_pressed)
+			{
+				_delay_ms(10);
+				if(!(PIND & (1<<PIND7))) // yellow
 			{
 				loading_screen();
 				draw_frame();
@@ -910,6 +913,7 @@ play_machine()
 				LCD_drawString(50, 65, string, BLACK, CYAN);
 				long_delay(4);
 				break;
+			}
 			}
 		}
 	}

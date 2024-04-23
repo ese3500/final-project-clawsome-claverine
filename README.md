@@ -1,13 +1,27 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/2TmiRqwI)
-# final-project-skeleton
+<p float="right">
+  <img src="p0.png" width="32%" />
+  <img src="p2.png" width="32%" /> 
+  <img src="p3.png" width="32%" />
+</p>
+
+<!-- # Clawsome Claverine -->
+<h1 align="center">Clawsome Claverine</h1>
+
+<p float="right">
+  <img src="p0.png" width="32%" />
+  <img src="p2.png" width="32%" /> 
+  <img src="p3.png" width="32%" />
+</p>
+
+<h1 align="center">final-project-skeleton</h3>
 
     * Team Name: Clawsome Claverine
     * Team Members: August Fu & Darian Mettler
     * Github Repository URL: https://github.com/ese3500/final-project-clawsome-claverine
-    * Github Pages Website URL: (not present yet)
+    * Github Pages Website URL: https://ese3500.github.io/final-project-clawsome-claverine/
     * Description of hardware: ATmega328PB, Windows on Arm 11 (Surface X Pro)
 
-## Final Project Proposal
+<h1 align="center">Proposal</h2>
 
 ### 1. Abstract
 
@@ -116,12 +130,6 @@ Throughout the project, we will conduct rigorous testing and debugging to ensure
 
 Some pictures of us trying things out and exploring what we can do with the machine!
 
-![p0](p0.png)
-![p1](p1.png)
-![p2](p2.png)
-![p3](p3.png)
-![p4](p4.png)
-
 ### 9. Components
 
 <!--What major components do you need and why?-->
@@ -166,7 +174,7 @@ This section is to help guide your progress over the next few weeks. Feel free t
 
 Add your slides to the Final Project Proposal slide deck in the Google Drive.
 
-## Final Project Report
+<h1 align="center">Final Project Report</h2>
 
 Don't forget to make the GitHub pages public website!
 If you’ve never made a Github pages website before, you can follow this webpage (though, substitute your final project repository for the Github username one in the quickstart guide):  <https://docs.github.com/en/pages/quickstart>
@@ -177,7 +185,14 @@ If you’ve never made a Github pages website before, you can follow this webpag
 
 ### 2. Images
 
-[Insert final project images here]
+<h1 align="center">Teardown, Testing</h6>
+
+<p float="center">
+  <img src="p0.png" width="24%" />
+  <img src="p2.png" width="24%" /> 
+  <img src="p3.png" width="24%" />
+  <img src="p4.png" width="24%">
+</p>
 
 ### 3. Results
 
@@ -195,9 +210,11 @@ Based on your quantified system performance, comment on how you achieved or fell
 
 Reflect on your project. Some questions to consider: What did you learn from it? What went well? What accomplishments are you proud of? What did you learn/gain from this experience? Did you have to change your approach? What could have been done differently? Did you encounter obstacles that you didn’t anticipate? What could be a next step for this project?
 
-## References
+<h1 align="center">References</h2>
 
 Fill in your references here as you work on your proposal and final submission. Describe any libraries used here.
+
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/2TmiRqwI)
 
 ## Github Repo Submission Resources
 
