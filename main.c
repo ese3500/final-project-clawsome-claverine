@@ -354,7 +354,7 @@ void drive_motors() {
     if(!(PIND & (1<<PIND1)))
     {
         drive_motor_down();
-    }else if (!(PIND & (1<<PIND7)))
+    }else if (!(PINE & (1<<PINE3)))
     {
 		drive_motor_up();
     }else
@@ -554,13 +554,13 @@ void Initialize()
 // 		PORTD &= ~(1<<PORTD0);
 // 		PORTD &= ~(1<<PORTD0);
 	
-		DDRD |= (1<<DDD7);
+		DDRE |= (1<<DDE3);
 		DDRD |= (1<<DDD1);
 		PORTD |= (1<<PORTD7);
 		PORTD |= (1<<PORTD1);
 		DDRD &= ~(1<<DDD7);
 		DDRD &= ~(1<<DDD1);
-	 	PIND |= (1<<PIND7);
+	 	PINE |= (1<<PINE3);
 	 	PIND |= (1<<PIND1);
 		 
 		 // red button
@@ -739,7 +739,7 @@ void play_easy()
 				if(!(PIND & (1<<PIND1)))
 				{
 					drive_motor_down();
-				}else if (!(PIND & (1<<PIND7)))
+				}else if (!(PINE & (1<<PINE3)))
 				{
 					drive_motor_up();
 				}else
@@ -754,6 +754,9 @@ void play_easy()
 		}
 	}
 	stop_sound();
+	motor_stop_updown();
+	motor_stop_rightleft();
+	motor_stop_backforth();
 	if(object_detected)
 	{
 		winning_game();
@@ -816,7 +819,7 @@ void play_hard()
 				if(!(PIND & (1<<PIND1)))
 				{
 					drive_motor_forth();
-				}else if (!(PIND & (1<<PIND7)))
+				}else if (!(PINE & (1<<PINE3)))
 				{
 					drive_motor_back();
 				}else
@@ -831,6 +834,9 @@ void play_hard()
 		}
 	}
 	stop_sound();
+	motor_stop_updown();
+	motor_stop_rightleft();
+	motor_stop_backforth();
 	if(object_detected)
 	{
 		winning_game();
@@ -887,33 +893,34 @@ play_machine()
 		LCD_drawString(5, 100, string, BLACK, BLACK);
 		while(1)
 		{
-			if(!(PIND & (1<<PIND7)) || !(PIND & (1<<PIND1)) || !red_button_pressed)
+			if(!(PINE & (1<<PINE3)) || !(PIND & (1<<PIND1)) || !red_button_pressed)
+			/*if(0)*/
 			{
-				_delay_ms(10);
-				if(!(PIND & (1<<PIND7))) // yellow
-			{
-				loading_screen();
-				draw_frame();
-				start_countdown(BLACK, MAGENTA);
-				play_easy();
-				break;
-			}else if(!(PIND & (1<<PIND1))) // blue
-			{
-				loading_screen();
-				draw_frame();
-				start_countdown(BLACK, MAGENTA);
-				play_hard();
-				break;
-			}else if(!red_button_pressed) // red
-			{
-				LCD_drawBlock(1,19,158,127,CYAN);
-				string = "THANK YOU";
-				LCD_drawString(60, 55, string, BLACK, CYAN);
-				string = "Enjoy your day!!";
-				LCD_drawString(50, 65, string, BLACK, CYAN);
-				long_delay(4);
-				break;
-			}
+				_delay_ms(500);
+				if(!(PINE & (1<<PINE3))) // yellow
+					{
+						loading_screen();
+						draw_frame();
+						start_countdown(BLACK, MAGENTA);
+						play_easy();
+						break;
+					}else if(!(PIND & (1<<PIND1))) // blue
+					{
+						loading_screen();
+						draw_frame();
+						start_countdown(BLACK, MAGENTA);
+						play_hard();
+						break;
+					}else if(!red_button_pressed) // red
+					{
+						LCD_drawBlock(1,19,158,127,CYAN);
+						string = "THANK YOU";
+						LCD_drawString(60, 55, string, BLACK, CYAN);
+						string = "Enjoy your day!!";
+						LCD_drawString(50, 65, string, BLACK, CYAN);
+						long_delay(4);
+						break;
+					}
 			}
 		}
 	}
