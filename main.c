@@ -31,6 +31,8 @@ volatile uint8_t left_boundary_hit = 0;
 volatile uint8_t red_button_pressed = 0;
 volatile uint8_t object_detected = 0;
 
+volatile uint8_t light_mode = 0;
+
 char *string;
 
 // Enumeration for game modes
@@ -556,12 +558,18 @@ void Initialize()
 	
 		DDRE |= (1<<DDE3);
 		DDRD |= (1<<DDD1);
-		PORTD |= (1<<PORTD7);
+		// PORTD |= (1<<PORTD7);
 		PORTD |= (1<<PORTD1);
-		DDRD &= ~(1<<DDD7);
+		// DDRD &= ~(1<<DDD7);
 		DDRD &= ~(1<<DDD1);
 	 	PINE |= (1<<PINE3);
 	 	PIND |= (1<<PIND1);
+
+		// lighting
+		DDRD |= (1<<DDD0);
+		DDRD |= (1<<DDD7);
+		PORTD &= ~(1<<PORTD0);
+		PORTD &= ~(1<<PORTD7);
 		 
 		 // red button
 // 		DDRB &= ~(1<<DDB4);
@@ -685,6 +693,32 @@ winning_game()
 	_delay_ms(250);
 }
 
+display_light(uint8_t chosen_lightmode)
+{
+	chosen_lightmode %= 3;
+	if(chosen_lightmode==0)
+	{
+		PORTD &= ~(1<<PORTD0);
+		PORTD &= ~(1<<PORTD7);
+	}else if(chosen_lightmode==1)
+	{
+		PORTD |= (1<<PORTD0);
+		PORTD &= ~(1<<PORTD7);
+	}else if(chosen_lightmode==2)
+	{
+		PORTD &= ~(1<<PORTD0);
+		PORTD |= (1<<PORTD7);
+	}
+	light_mode = chosen_lightmode;
+}
+
+change_light()
+{
+	++light_mode;
+	light_mode %=3;
+	display_light(light_mode);
+}
+
 void play_easy()
 {
 	LCD_drawBlock(1,19,158,127,MAGENTA);
@@ -713,6 +747,7 @@ void play_easy()
 			{
 				++l;
 			}
+			change_light();
 			for(uint16_t k=0;k<45535 && !object_detected;++k)
 			{
 				if((adc_value_backforth<50) && !right_boundary_hit)
@@ -753,6 +788,7 @@ void play_easy()
 			}
 		}
 	}
+	display_light(0);
 	stop_sound();
 	motor_stop_updown();
 	motor_stop_rightleft();
@@ -791,6 +827,7 @@ void play_hard()
 			{
 				++l;
 			}
+			change_light();
 			for(uint16_t k=0; k<5000 && !object_detected;++k)
 			{
 				if((adc_value_backforth<50) && !right_boundary_hit)
@@ -837,6 +874,7 @@ void play_hard()
 	motor_stop_updown();
 	motor_stop_rightleft();
 	motor_stop_backforth();
+	display_light(0);
 	if(object_detected)
 	{
 		winning_game();
@@ -850,7 +888,7 @@ void play_hard()
 play_machine()
 {
 	draw_frame();
-	
+	display_light(0);
 	if(1)
 	{
 		LCD_drawBlock(1,19,158,127,BLACK);
@@ -938,6 +976,7 @@ int main(void)
 	// Initialization
 	Initialize();
 	LCD_setScreen(BLUE);
+	display_light(0);
 //  	UART_init(BAUD_PRESCALER);
 	while(1)
 	{
