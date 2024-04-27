@@ -59,9 +59,25 @@ The circuit we have done so far is the motor control circuit, which is able to s
 |PB3|Adafruit, 1.8'' TFT, LCD Display|MOSI|          |
 |PB5|Adafruit, 1.8'' TFT, LCD Display|SCK|          |
 |PD6|Adafruit, 1.8'' TFT, LCD Display|LITE|          |
-|          |          |          |          |
-|          |          |          |          |
-|          |          |          |          |
+|PD4|motor back|          |          |
+|PD5|motor forth|          |(1)|
+|PD3|motor forth|          |(1)|
+|PC2|motor right|          |          |
+|PC3|motor left|          |          |
+|PC4|motor up|          |          |
+|PC5|motor down|          |          |
+|PE0|boundary sensor right|          |interrupt|
+|PE1|boundary sensor left|          |interrupt|
+|PE2|red button|          |interrupt|
+|PE3|coin sensor and oject detection sensor|          |interrupt|
+|PC0|LED|          |(2)|
+|PC7|LED|          |(2)|
+|PC2|Buzzer PWD pin|          |Timer 3|
+|PB4| floating |          |(3)|
+
+(1)To have the back and forth boundary sensors working we need two pins to drive the motors
+(2)The LED work as such that lighting up one shorst the other so it is not exactly a MUX but it works more or less like a multiplexer to safe pins, so therefor not every LED has a dedicated pin but we have two pins for four LED's
+(3) This register is used by the LCD screen and therefor the pin cannot be used without disableing the LCD screen
 
 ##### Connections to Ground (Yellow)
 | Connected device | Connected device port | remark |

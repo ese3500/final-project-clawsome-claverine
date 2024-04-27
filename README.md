@@ -246,7 +246,19 @@ SRS 17 - `set_up_sound()` sets up the sound system with the rigth timer but not 
 SRS 18 - `stop_sound()` stops sound means it sets the duty cycle to zero
 SRS 19 - `play_sound()` plays sound means the duty cycle gets nonzero and the frequency gets changed according to the demanded letter which belongs to a tone and therefore a frequency, the letter is passed into the function as a parameter and the function only plays a single tone
 SRS 20 - `ISR(PCINT3_vect)` pin chang interrupts at the e pins
-
+SRS 21 - `Initialize()` initializing all the general pins and calling all the initialize funtions to initialies certain bundeled functionalities
+SRS 22 - `long_delay()` delay function
+SRS 23 - `draw_frame()` drawing game fram e on LCD screen
+SRS 24 - `loading_screen()` displaying loading screen
+SRS 25 - `start_countdown()`doing the initial 3 seconds countdown before starting the game
+SRS 26 - `loosing_game()` displaying the loosing screen and playing the loosing sound
+SRS 27 - `winning_game()` displaying the winning screen and playing the winning sound
+SRS 28 - `display_light()` light the demanded LED
+SRS 29 - `change_light()` change the LED that is running in a circular fashion
+SRS 30 - `play_easy()` gameplay for the easy mode
+SRS 31 - `play_hard()` gameplayfor the hard mode
+SRS 32 - `play_machine()` playing the machine, this is the primary function that runs and does everyting and call all the other functions and functionallities of the machine, so this funciton is the one which has to be called to make the machine run it is the basic frame around all the functions and also calls all the other functions like the funcitons playing the game
+SRS 33 - `main()` main function which initializes the screen and call the `play_machine()` function in a while loop to keep the machine running
 
 #### 3.2 Hardware Requirements Specification (HRS) Results
 
@@ -262,28 +274,25 @@ Based on your quantified system performance, comment on how you achieved or fell
 |PB3|Adafruit, 1.8'' TFT, LCD Display|MOSI|          |
 |PB5|Adafruit, 1.8'' TFT, LCD Display|SCK|          |
 |PD6|Adafruit, 1.8'' TFT, LCD Display|LITE|          |
-|          |          |          |          |
-|          |          |          |          |
-|          |          |          |          |
+|PD4|motor back|          |          |
+|PD5|motor forth|          |(1)|
+|PD3|motor forth|          |(1)|
+|PC2|motor right|          |          |
+|PC3|motor left|          |          |
+|PC4|motor up|          |          |
+|PC5|motor down|          |          |
+|PE0|boundary sensor right|          |interrupt|
+|PE1|boundary sensor left|          |interrupt|
+|PE2|red button|          |interrupt|
+|PE3|coin sensor and oject detection sensor|          |interrupt|
+|PC0|LED|          |(2)|
+|PC7|LED|          |(2)|
+|PC2|Buzzer PWD pin|          |Timer 3|
+|PB4| floating |          |(3)|
 
-###### Connections to Ground (Yellow)
-| Connected device | Connected device port | remark |
-|----------|----------|----------|
-|Adafruit, 1.8'' TFT, LCD Display|GND|          |
-|          |          |          |
-|          |          |          |
-|          |          |          |
-|          |          |          |
-
-
-###### Connections to Vcc (5V) (Green)
-| Connected device | Connected device port | remark |
-|----------|----------|----------|
-|Adafruit, 1.8'' TFT, LCD Display|VCC|          |
-|          |          |          |
-|          |          |          |
-|          |          |          |
-|          |          |          |
+(1)To have the back and forth boundary sensors working we need two pins to drive the motors
+(2)The LED work as such that lighting up one shorst the other so it is not exactly a MUX but it works more or less like a multiplexer to safe pins, so therefor not every LED has a dedicated pin but we have two pins for four LED's
+(3) This register is used by the LCD screen and therefor the pin cannot be used without disableing the LCD screen
 
 ### 4. Conclusion
 
