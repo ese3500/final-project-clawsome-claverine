@@ -197,11 +197,28 @@ If you’ve never made a Github pages website before, you can follow this webpag
 
 ### 3. Results
 
-What were your results? Namely, what was the final solution/design to your problem?
+We managed to build properly a working claw machine with two very different game modes with which everyone can enjoy their lab day in Dedkin. For maximum excitement we also managed to include a buzzer playing "Mozart" music and LEDs which flash independant from each other during the gameplay to give it a disco feeling.
+
+First, coins have to be paied which then leads the player onto a menu screen where they can choose a game mode or choose to surrender and donate the money. There are two distinct game modes, an "EASY" mode and a "CRAZY" mode. In the former one the controls are intuitive the joystick can be used to control the back and forth as well as left and right motion and two buttons are implemented to move the claw up and down for grabbing. In this mode the player has around 60 seconds to grab an object and dump it to the exit where a detector will recognize the object and a winning screen will pop up and a winning sound will be played, if they do not manage to catch and drop an item a loosing screen will be shown. In the "CRAZY" mode however not only the time to play is reduced to only a quarter but also the controls are really unintuitive and messed up completely which makes it crazy and very hard to win. To increase the fun factor in the crazy mode even more the music is playing much faster and also the LEDs are changing much quicker. After each game has ended the machine will go back to the welcome screen where coins can be inserted to start another game.
+
+There are certain safeguards in place, there are for example interrupt triggered boundary sensors in place to prevent the motors running further if they already hit a boundary. As soon as they did so only movement in the direction of the boundary is stopped and ony opposite movement will be possible. To prevent noise there is also hardware debouncing used, especially for the buttons to not accidently trigger. On the other hand the object detection sensor is very sensitive and there is no debouncin but in all our tests we did not recognize any issues with it. For safety the voltage and currents on the motors are bounded to 4.5V and 0.11A such that they will not heat up to much and a continuous gameplay is possible. On the other hand if a motor is suddendly switched off a lot of current is suddendly stopped which could harm our parts which is why we put the buzzer in such a position that it can take the additional current. The machine can also be connected to a computer and has UART implemented in its code, however this feature can only be used when at least one LED is not used as it requires the pin PC0.
+
+The coins that are used to play the machine will fall in a container which can be easily removed by the owner of the machine and good money can be earned.
+
+<!-- What were your results? Namely, what was the final solution/design to your problem? -->
 
 #### 3.1 Software Requirements Specification (SRS) Results
 
 Based on your quantified system performance, comment on how you achieved or fell short of your expected software requirements. You should be quantifying this, using measurement tools to collect data.
+
+#### Overview
+The software of the projects contains out of the libraries as well as the main file all coded in bare metal C. Half of the library is used for UART, which is disabled in the final project as it is not needed and there is a lack of pins and the other half are the libraries for the LCD screen which were written by Darian in a prior lab assignment. The `main()` in file consists out of three parts, the first part which includes all the functions to initialize the board and all the pins, the second part with functions that are used for the game dynamics and the last part including the `main()` function as well as the `play_machine()` function putting everything together. Where the `main()` function only initializes the screen and calls the `play_machine()` function one in an infintie loop. The paly machine function does all of the machine's structural functionallities and calls other functions like `play_easy()` for the actual gameplay. In the initializing part there is one main `Initialize()` function but this again calls a lot of other more specific initialize functions to make the code more readable and understandable.
+
+#### Users
+Everyone with more than 6 years can use our product as it is very safe. The moving parts are well shielded from the user and the voltages on all the sensors and the screen are only 5V and at most 20mA which can not harm anyone. It is also very easy to use and very intuitive so really anyone can  have fun playing with it.
+
+#### Definitions, Abreviations
+#### Funcitonality
 
 #### 3.2 Hardware Requirements Specification (HRS) Results
 
@@ -209,7 +226,27 @@ Based on your quantified system performance, comment on how you achieved or fell
 
 ### 4. Conclusion
 
-Reflect on your project. Some questions to consider: What did you learn from it? What went well? What accomplishments are you proud of? What did you learn/gain from this experience? Did you have to change your approach? What could have been done differently? Did you encounter obstacles that you didn’t anticipate? What could be a next step for this project?
+What went well?
+We managed our time effectively and finished ahead of schedule, which allowed us to have extra time for debugging and polishing our project. Despite facing technical challenges, we persevered and were able to overcome them. In the end we measrued that, our claw machine was fully functional and was able to carry 50 grams of weight (two Lindor chocolate balls).
+
+What accomplishments are you proud of?
+We are proud to successfully complete the project within the designated time frame, despite encountering challenges such as motor control issues, Atmega breakage, ADC complexities, and the need to fabricate a custom catch sensor. A notable achievement was utilizing every pin on the Atmega328PB and efficiently managing data memory usage, reaching 97.5%. Overcoming these hurdles while delivering a fully functional claw machine stands as a significant milestone for us.
+Our primary aim with the claw machine was to provide entertainment and bring excitement and joy. After four weeks of dedicated effort, we are delighted to have achieved that goal. During the demo day, people were impressed by the concept and thoroughly enjoyed playing with it.
+
+What did you learn/gain from this experience?
+We gained hands-on experience with microcontrollers, honed our problem-solving skills, improved our understanding of electronics and microcontroller programming concepts, and developed resilience in the face of technical challenges. We learned that driving motors that require high current is dangerous in an Arduino project, and chips do burn when you send too much current through it.
+
+Did you have to change your approach?
+Yes, we had to adjust our approach multiple times, especially when dealing with motor control and creating a custom catch sensor after the original one broke. We also had to refine our code to implement different game modes effectively.
+
+What could have been done differently? 
+In hindsight, we could have allocated more time for testing and debugging, especially considering the complexities involved in motor control and sensor integration. Additionally, having backup components like extra ATMegas could have helped us avoid delays caused by hardware failures.
+
+Did you encounter obstacles that you didn’t anticipate?
+Yes, we faced unexpected challenges such as motor control issues that required extensive troubleshooting and building a custom catch sensor due to the original sensor breaking. We also did not fully anticipate burning through two Atmegas.
+
+What could be a next step for this project?
+A next step could be further refining the code and adding more advanced features to the claw machine, such as incorporating computer vision for object recognition or enhancing the gameplay with additional modes and challenges. Conducting user testing and gathering feedback could also help in improving the overall experience. During the demo, someone mentioned that the machine should be able to reset the claw after every game; this could be an additional feature.
 
 <h2 align="center">References</h2>
 

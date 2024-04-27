@@ -31,6 +31,7 @@
 - Sucsess Sensor
     - LED always lighting towards the sensor with light in a specific frequency
     - Light sensor which detets if the incomming light from the matching frequency is too low and then it goes down.
+    - This sucess sensor actually got destroid so we build a new sensor which should now be more robust against mismanagement ans which can be replaced more easily. It consists out of eight very.
 
 ### Actuators
 - Buzzer

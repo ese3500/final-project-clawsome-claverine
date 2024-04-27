@@ -649,11 +649,7 @@ void loosing_game()
 	LCD_drawBlock(1,19,158,127,RED);
 	string = "You loose!";
 	LCD_drawString(60, 55, string, BLACK, RED);
-	play_sound('E');
-	_delay_ms(250);
-	stop_sound();
-	_delay_ms(250);
-	play_sound('F');
+	play_sound('B');
 	_delay_ms(250);
 	stop_sound();
 	_delay_ms(250);
@@ -661,7 +657,11 @@ void loosing_game()
 	_delay_ms(250);
 	stop_sound();
 	_delay_ms(250);
-	play_sound('B');
+	play_sound('F');
+	_delay_ms(250);
+	stop_sound();
+	_delay_ms(250);
+	play_sound('E');
 	_delay_ms(500);
 	_delay_ms(250);
 	stop_sound();
@@ -674,19 +674,19 @@ winning_game()
 	LCD_drawBlock(1,19,158,127,RED);
 	string = "You win!";
 	LCD_drawString(60, 55, string, BLACK, RED);
-	play_sound('G');
-	_delay_ms(250);
-	stop_sound();
-	_delay_ms(250);
-	play_sound('G');
-	_delay_ms(250);
-	stop_sound();
-	_delay_ms(250);
-	play_sound('G');
-	_delay_ms(250);
-	stop_sound();
-	_delay_ms(250);
 	play_sound('D');
+	_delay_ms(150);
+	stop_sound();
+	_delay_ms(150);
+	play_sound('D');
+	_delay_ms(150);
+	stop_sound();
+	_delay_ms(150);
+	play_sound('D');
+	_delay_ms(150);
+	stop_sound();
+	_delay_ms(150);
+	play_sound('G');
 	_delay_ms(500);
 	_delay_ms(250);
 	stop_sound();
@@ -905,7 +905,7 @@ play_machine()
 	{
 		if(!red_button_pressed)
 		{
-			_delay_ms(10);
+			_delay_ms(50);
 			if(!red_button_pressed)
 			{
 				break;
@@ -934,7 +934,7 @@ play_machine()
 			if(!(PINE & (1<<PINE3)) || !(PIND & (1<<PIND1)) || !red_button_pressed)
 			/*if(0)*/
 			{
-				_delay_ms(500);
+				_delay_ms(200);
 				if(!(PINE & (1<<PINE3))) // yellow
 					{
 						loading_screen();
