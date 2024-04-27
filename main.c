@@ -35,17 +35,6 @@ volatile uint8_t light_mode = 0;
 
 char *string;
 
-// Enumeration for game modes
-// enum GameMode {
-//     SLEEP,
-// 	PLAY,
-//     WIN,
-//     LOSS
-// };
-
-// Global variable to store the current game mode
-/*enum GameMode game_mode = SLEEP;*/
-
 #include <stdio.h>
 
 char *countdown[] = {
@@ -80,13 +69,11 @@ char mozart[] = {
 
 volatile char String[25]; //printing out message
 
-void selectADCchannel(uint8_t channel){
-    //0xE0 is 11100000
-    //0x1F is 00011111
+void selectADCchannel(uint8_t channel){ //selects the ADC channel given as a variable (0 or 1 in our exa ple)
     ADMUX = (ADMUX & 0xE0) | (channel & 0x1F);
 }
 
-ISR(ADC_vect) {
+ISR(ADC_vect) { //reads the ADC value and changes the channels
     //get current channel
     uint8_t currentChannel = ADMUX & 0x0F;
 
@@ -94,14 +81,10 @@ ISR(ADC_vect) {
     switch(currentChannel){
         case ADC_LEFTRIGHT_CHANNEL: 
 			adc_value_leftright = ADC;
-// 			sprintf(String,"ADC left/right channel read %u \n", adc_value_leftright);
-// 			UART_putstring(String);
 			selectADCchannel(ADC_BACKFORTH_CHANNEL);
             break;
         case ADC_BACKFORTH_CHANNEL: 
 			adc_value_backforth = ADC;
-// 			sprintf(String,"ADC forward/backward channel read %u \n", adc_value_backforth);
-// 			UART_putstring(String);
 			selectADCchannel(ADC_LEFTRIGHT_CHANNEL);
             break;
     }
@@ -110,7 +93,7 @@ ISR(ADC_vect) {
     ADCSRA |= 1 << ADSC;
 }
 
-void setUpADC() {
+void setUpADC() { // setup of the ADC
 	 // Setup for ADC (10bit = 0-1023)
 	 // Clear power reduction bit for ADC
 	 PRR0 &= ~(1 << PRADC);
@@ -136,11 +119,6 @@ void setUpADC() {
 
 	 ADCSRA |= (1 << ADATE);   // Autotriggering of ADC
 
-	// Free running mode ADTS[2:0] = 000
-	//  ADCSRB &= ~(1 << ADTS0);
-	//  ADCSRB &= ~(1 << ADTS1);
-	//  ADCSRB &= ~(1 << ADTS2);
-
 	//enable interrupt
     ADCSRA |= 1<<ADIE;
 
@@ -154,178 +132,64 @@ void setUpADC() {
 	ADCSRA |= (1 << ADSC);	
 }
 
-// void set_up_catch_sensors() {
-// 	// PD7 as input, with pull-up resistors enabled
-// //     DDRD &= ~(1 << PIND7);
-// //     PORTD |= (1 << PIND7);
-// // 
-// //     EIMSK |= (1 << INT2); // enable external interrupts
-// // 
-// // 	EICRA |= (1 << ISC21); // trigger on falling edge
-// }
-
-// ISR for INT2 (PD7)
-// ISR(INT2_vect) {
-// 	sprintf(String,"ISR PD7\n");
-// 	UART_putstring(String);
-//     // check if PD7 is low (falling edge)
-//     if (!(PIND & (1 << PIND7))) {
-// 		sprintf(String,"PD7 triggered, enter winning mode \n");
-// 		UART_putstring(String);
-//         game_mode = WIN;
-//     }
-// }
-
-// void set_up_rightleft_sensors() {
-// // 	// PD0 and PD1 as input, with pull-up resistors enabled
-// //  	DDRD &= ~(1 << PIND0) & ~(1 << PIND1);
-// //  	PORTD |= (1 << PIND0) | (1 << PIND1);
-// 
-// // 	PCICR |= (1 << PCIE2); // Enable PCINT group 2
-// // 	PCMSK2 |= (1 << PCINT16) | (1 << PCINT17); // Enable PD0 (PCINT16) and PD1 (PCINT17)
-// }
-
-// ISR for INT0 (PD0)
-// ISR(PCINT2_vect) {
-// // 	if(PIND & (1<<PIND0))
-// // 	{
-// // 		sprintf(String,"ISR PD0\n");
-// // 		UART_putstring(String);
-// // 		_delay_ms(50);
-// // 	}
-// // 	sprintf(String,"ISR PD0\n");
-// // 	UART_putstring(String);
-// //     if (!(PIND & (1 << PIND0))) {
-// // 		sprintf(String,"PD0 triggered, stop left right sensors\n");
-// // 		UART_putstring(String);
-// //         motor_stop_rightleft();
-// //     }
-// 	
-// 	// 	sprintf(String,"ISR PD1\n");
-// 	// 	UART_putstring(String);
-// // 	if ((PIND & (1 << PIND0))) {
-// // 		right_boundary_hit = 1;
-// // 		// 		sprintf(String,"PD1 triggered, stop left right sensors\n");
-// // 		// 		UART_putstring(String);
-// // 		//         motor_stop_rightleft();
-// // 	}else
-// // 	{
-// // 		right_boundary_hit = 0;
-// // 	}
-// }
-// 
-// // ISR for INT1 (PD1)
-// ISR(INT1_vect) {
-// 	sprintf(String,"ISR PD1\n");
-// 	UART_putstring(String);
-// 	_delay_ms(50);
-// //     if ((PIND & (1 << PIND1))) {
-// // 		right_boundary_hit = 1;
-// // // 		sprintf(String,"PD1 triggered, stop left right sensors\n");
-// // // 		UART_putstring(String);
-// // //         motor_stop_rightleft();
-// //     }else
-// // 	{
-// // 		right_boundary_hit = 0;
-// // 	}
-// }
-
-void motor_stop_backforth()
+void motor_stop_backforth() // stops the back forth motor
 {
 		DDRD |= (1<<DDD3);
 	 	DDRD |= (1<<DDD5);
-// 	PORTC &= ~(1<<PORTC2); //right
-// 	PORTC &= ~(1<<PORTC3); //left
-	// 	PORTC &= ~(1<<PORTC4); //back
-	// 	PORTC &= ~(1<<PORTC5); //forth
 	 	PORTD &= ~(1<<PORTD3);
 	 	PORTD &= ~(1<<PORTD4); //back
 	 	PORTD &= ~(1<<PORTD5); //forth
 }
 
-void motor_stop_rightleft()
+void motor_stop_rightleft() // stops the right left motor
 {
-// 	DDRD |= (1<<DDD3);
-// 	DDRD |= (1<<DDD5);
 	PORTC &= ~(1<<PORTC2); //right
 	PORTC &= ~(1<<PORTC3); //left
-// 	PORTC &= ~(1<<PORTC4); //back
-// 	PORTC &= ~(1<<PORTC5); //forth
-// 	PORTD &= ~(1<<PORTD3);
-// 	PORTD &= ~(1<<PORTD4);
-// 	PORTD &= ~(1<<PORTD5);
 }
 
-void motor_stop_updown()
+void motor_stop_updown() // stops the up down motor
 {
-	// 	DDRD |= (1<<DDD3);
-	// 	DDRD |= (1<<DDD5);
-// 	PORTC &= ~(1<<PORTC2); //right
-// 	PORTC &= ~(1<<PORTC3); //left
 	PORTC &= ~(1<<PORTC4); //up
 	PORTC &= ~(1<<PORTC5); //down
-// 	PORTD &= ~(1<<PORTD3);
-// 	PORTD &= ~(1<<PORTD4);
-// 	PORTD &= ~(1<<PORTD5);
 }
 
-void drive_motor_right()
+void drive_motor_right() // drives motor right
 {
 	PORTC |= (1<<PORTC2);
 	PORTC &= ~(1<<PORTC3);
-// 	_delay_ms(500);
-// 	PORTC &= ~(1<<PORTC2); //right
-// 	PORTC &= ~(1<<PORTC3); //left
 }
 
-void drive_motor_left()
+void drive_motor_left() //drives motor left
 {
 	PORTC |= (1<<PORTC3);
 	PORTC &= ~(1<<PORTC2);
-// 	_delay_ms(500);
-// 	PORTC &= ~(1<<PORTC2); //back
-// 	PORTC &= ~(1<<PORTC3); //forth
 }
 
-void drive_motor_down()
+void drive_motor_down() // drives motor down
 {
 	PORTC |= (1<<PORTC4);
 	PORTC &= ~(1<<PORTC5);
 }
 
-void drive_motor_up()
+void drive_motor_up() // drives motor up
 {
 	PORTC |= (1<<PORTC5);
 	PORTC &= ~(1<<PORTC4);
 }
 
-void drive_motor_back()
+void drive_motor_back() // drives motor back
 {
-// 	sprintf(String,"gone through\n");
-// 	UART_putstring(String);
-// 	PORTD |= (1<<PORTD3);
-// 	PORTD |= (1<<PORTD5);
-// 	DDRD &= ~(1<<DDD5);
-// 	DDRD |= (1<<DDD3);
-// 	PIND &= ~(1<<PIND5);
-// 	PORTD |= (1<<PORTD5);
 	PORTD |= (1<<PORTD4);
 	PORTD &= ~(1<<PORTD5);
 }
 
-void drive_motor_forth()
+void drive_motor_forth() // drives motor forth
 {
-// 	sprintf(String,"gone through\n");
-// 	UART_putstring(String);
-// 	PORTD &= ~(1<<PORTD3);
-// 	PORTD &= ~(1<<PORTD5);
-//  	DDRD &= ~(1<<DDD3);
-// 	DDRD |= (1<<DDD5);
 	PORTD |= (1<<PORTD5);
 	PORTD &= ~(1<<PORTD4);
 }
 
-void drive_motors() {
+void drive_motors() { // drives and stops motors according to button and ADC inputs
     if((adc_value_backforth<50) && !right_boundary_hit)
     {
         drive_motor_right();
@@ -337,16 +201,12 @@ void drive_motors() {
         motor_stop_rightleft();
     }
     
-// 		_delay_ms(500);
-    
     if(adc_value_leftright<50)
     {
-// 			drive_motor_back();
 		drive_motor_forth();
         
     }else if(adc_value_leftright>950)
     {
-// 			drive_motor_forth();
 		drive_motor_back();
         }else
     {
@@ -365,7 +225,7 @@ void drive_motors() {
     }
 }
 
-void set_up_interrupt() {
+void set_up_interrupt() { // sets up boudary sensor interrupts and coin as well as button interupts at the e pins
 	sprintf(String,"setting up interrupt sensor\n");
 	UART_putstring(String);
 	
@@ -389,7 +249,7 @@ void set_up_interrupt() {
 	UART_putstring(String);
 }
 
-void setup_sound()
+void setup_sound() // sets up the sound system with the rigth timer but not playing yet
 {
 	DDRD |= (1 << PIND2);
 	PORTD |= (1<<PORTD2);
@@ -411,13 +271,13 @@ void setup_sound()
 	OCR3B = 0;
 }
 
-void stop_sound()
+void stop_sound() // stops sound means it sets the duty cycle to zero
 {
 	OCR3A = 127;
 	OCR3B = 0;
 }
 
-void play_sound(char tone)
+void play_sound(char tone) // plays sound means the duty cycle gets nonzero and the frequency gets changed according to the demanded letter which belongs to a tone and therefore a frequency, the letter is passed into the function as a parameter and the function only plays a single tone
 {	
 	switch(tone)
 	{
@@ -454,70 +314,37 @@ void play_sound(char tone)
 			OCR3B = 0;
 			break;
 	}
-	
-// 	_delay_ms(125);
-// 	OCR3B = 	
-//	247 = 512
-//	C 523 = 239
-//	D 587 = 213
-//  E 659 = 190
-//  F 698 = 179
-//  G 784 = 159
-//  A 880 = 142
-//  B 988 = 127
 }
 
-ISR(PCINT3_vect) {
-	
-// 
-// 	sprintf(String,"enter ISR\n");
-// 	UART_putstring(String);
-
-//     uint8_t current_pin_state = PINE;
+ISR(PCINT3_vect) { // pin chang interrupts at the e pins
     
     // Check if PE0 (PCINT24) has changed
 	if (PINE & (1 << PINE0)) {
 		// PE0 went from low to high (rising edge)
 		left_boundary_hit = 1;
-// 		sprintf(String,"%u \n", left_boundary_hit);
-// 		UART_putstring(String);
 	} else {
 		// PE0 went from high to low (falling edge)
 		left_boundary_hit = 0;
-// 		sprintf(String,"falling  %u \n", left_boundary_hit);
-// 		UART_putstring(String);
 	}
 	
 	if (PINE & (1 << PINE1)) {
 		// PE0 went from low to high (rising edge)
 		right_boundary_hit = 1;
-		// 		sprintf(String,"%u \n", left_boundary_hit);
-		// 		UART_putstring(String);
 		} else {
 		// PE0 went from high to low (falling edge)
-		right_boundary_hit = 0;
-		// 		sprintf(String,"falling  %u \n", left_boundary_hit);
-		// 		UART_putstring(String);
 	}
 	
 	if (PINE & (1 << PINE2)) {
 		// PE0 went from low to high (rising edge)
 		red_button_pressed = 1;
-// 				sprintf(String,"%u \n", left_boundary_hit);
-// 		 		UART_putstring(String);
 		} else {
 		// PE0 went from high to low (falling edge)
 		red_button_pressed = 0;
-		// 		sprintf(String,"falling  %u \n", left_boundary_hit);
-		// 		UART_putstring(String);
 	}
-
-// 	sprintf(String,"leave ISR\n");
-// 	UART_putstring(String);
 }
 
 
-void Initialize()
+void Initialize() // initializing all the general pins and calling all the initialize funtions to initialies certain bundeled functionalities
 {
 	// Initialization LCD Screen
 	lcd_init();
@@ -540,8 +367,6 @@ void Initialize()
 	DDRD |= (1<<DDD5);
 	
 	// pulling all motor ports down initially
-	// 	PORTC &= ~(1<<PORTC0); //right
-	// 	PORTC &= ~(1<<PORTC1); //left
 	PORTC &= ~(1<<PORTC2); //right
 	PORTC &= ~(1<<PORTC3); //left
 	PORTC &= ~(1<<PORTC4); //up
@@ -552,10 +377,7 @@ void Initialize()
 	
 	
 	// buttons up down
-	
-// 		PORTD &= ~(1<<PORTD0);
-// 		PORTD &= ~(1<<PORTD0);
-	
+
 		DDRE |= (1<<DDE3);
 		DDRD |= (1<<DDD1);
 		// PORTD |= (1<<PORTD7);
@@ -565,28 +387,21 @@ void Initialize()
 	 	PINE |= (1<<PINE3);
 	 	PIND |= (1<<PIND1);
 
-		// lighting
+		// lighting LED
 		DDRD |= (1<<DDD0);
 		DDRD |= (1<<DDD7);
 		PORTD &= ~(1<<PORTD0);
-		PORTD &= ~(1<<PORTD7);
-		 
-		 // red button
-// 		DDRB &= ~(1<<DDB4);
-// 		PINB |= (1<<PINB4);
-		 
+		PORTD &= ~(1<<PORTD7);	 
 
 	set_up_interrupt();
-//  	set_up_rightleft_sensors();
 	
 	setUpADC();
 	
 	sei();
-	
-	// 	UART_init(BAUD_PRESCALER);
+
 }
 
-long_delay(uint8_t duration)
+long_delay(uint8_t duration) // delay function
 {
 	for(uint8_t i=0;i<duration;++i)
 	{
@@ -594,14 +409,14 @@ long_delay(uint8_t duration)
 	}
 }
 
-draw_frame()
+draw_frame() // drawing game frame on LCD screen
 {
 	LCD_setScreen(BLACK);
 	string = "CLAWSOME CLAVERINE";
 	LCD_drawString(34, 7, string, GREEN, BLACK);
 }
 
-void loading_screen()
+void loading_screen() // displaying the loading screen
 {
 	LCD_setScreen(YELLOW);
 	char *string;
@@ -614,7 +429,7 @@ void loading_screen()
 	}
 }
 
-void start_countdown(uint16_t front, uint16_t back)
+void start_countdown(uint16_t front, uint16_t back) // doing the initial 3 seconds countdown
 {
 	LCD_drawBlock(1,19,158,127,back);
 	string = "Game Starts in";
@@ -643,7 +458,7 @@ void start_countdown(uint16_t front, uint16_t back)
 	_delay_ms(500);
 }
 
-void loosing_game()
+void loosing_game() // displaying the loosing screen and playing the loosing sound
 {
 	draw_frame();
 	LCD_drawBlock(1,19,158,127,RED);
@@ -668,7 +483,7 @@ void loosing_game()
 	_delay_ms(250);
 }
 
-winning_game()
+winning_game() // displaying the winning screen and playing the winning sound
 {
 	draw_frame();
 	LCD_drawBlock(1,19,158,127,RED);
@@ -693,7 +508,7 @@ winning_game()
 	_delay_ms(250);
 }
 
-display_light(uint8_t chosen_lightmode)
+display_light(uint8_t chosen_lightmode) // light the demanded LED
 {
 	chosen_lightmode %= 3;
 	if(chosen_lightmode==0)
@@ -712,14 +527,14 @@ display_light(uint8_t chosen_lightmode)
 	light_mode = chosen_lightmode;
 }
 
-change_light()
+change_light() // change the LED in a circular fashion
 {
 	++light_mode;
 	light_mode %=3;
 	display_light(light_mode);
 }
 
-void play_easy()
+void play_easy() // gameplay for the easy mode
 {
 	LCD_drawBlock(1,19,158,127,MAGENTA);
 	string = "EASY MODE";
@@ -803,7 +618,7 @@ void play_easy()
 	object_detected = 0;
 }
 
-void play_hard()
+void play_hard() // gameplay for the hard mode
 {
 	LCD_drawBlock(1,19,158,127,MAGENTA);
 	string = "CRAZY MODE";
@@ -885,7 +700,7 @@ void play_hard()
 	object_detected = 0;
 }
 
-play_machine()
+play_machine() // playing the machine, this is the primary function that runs and does everyting and call all the other functions and functionallities of the machine, so this funciton is the one which has to be called to make the machine run it is the basic frame around all the functions and also calls all the other functions like the funcitons playing the game
 {
 	draw_frame();
 	display_light(0);
@@ -962,140 +777,19 @@ play_machine()
 			}
 		}
 	}
-	
-	
-	
-	
-	
-	
-// 	LCD_drawBlock(1,19,158,127,BLACK);
 }
 
-int main(void)
+int main(void) // main function which initializes the screen and call the `play_machine()` function in a while loop to keep the machine running
 {
-	// Initialization
+	// Initialization of screen
 	Initialize();
 	LCD_setScreen(BLUE);
 	display_light(0);
-//  	UART_init(BAUD_PRESCALER);
+
+	// playing machine
 	while(1)
 	{
 		play_machine();
 	}
 
-	while (0)
-	{
-// 		char notes[] = {
-// 			'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D',
-// 			'A', 'C', 'D', 'D', 'D', 'E', 'F', 'F', 'F', 'G',
-// 			'E', 'E', 'D', 'C', 'C', 'D',
-// 			'A', 'C', 'D', 'D', 'D', 'E', 'F', 'F', 'F', 'G',
-// 			'E', 'E', 'D', 'C', 'D',
-// 			'A', 'C', 'D', 'D', 'D', 'F', 'G', 'G', 'G', 'A',
-// 			'A', '#', 'A', '#', 'A', 'G', 'A',
-// 			'D', 'D', 'E', 'F', 'F', 'F', 'G',
-// 			'A', 'D', 'D', 'F', 'E', 'E', 'F', 'D',
-// 			'E', 'A', 'C', 'D', 'D', 'D', 'E', 'F', 'F', 'F', 'G',
-// 			'E', 'E', 'D', 'C', 'C', 'D',
-// 			'A', 'C', 'D', 'D', 'D', 'E', 'F', 'F', 'F', 'G',
-// 			'E', 'E', 'D', 'C', 'D',
-// 			'A', 'C', 'D', 'D', 'D', 'F', 'G', 'G', 'G', 'A',
-// 			'A', '#', 'A', '#', 'A', 'G',
-// 			'A', 'D', 'D', 'E', 'F', 'F', 'G',
-// 			'A', 'D', 'D', 'F', 'E', 'E', 'F', 'D',
-// 			'D', 'D', 'E', 'F', 'F', 'F', 'G',
-// 			'A', 'F', 'F', 'D', 'A',
-// 			'D', 'N', 'D', 'D', 'D', 'D', 'D', 'P',
-// 			'P', 'G', 'G', 'M', 'G', 'G', 'R',
-// 			'D', 'N', 'D', 'D', 'R', 'D', 'P',
-// 			'P', 'G', 'G', 'M', 'G', 'G', 'R'			//Pirrates of the carrebian
-			
-		char notes[] = {
-			'G', 'G', 'G', '#', 'E', 'E', 'F', 'D', '#', 'B', 'B', 'C', 'A', '#',
-			'A', 'A', 'B', 'G', '#', 'D', 'D', 'E', 'C', '#', 'B', 'B', 'C', 'A', '#',
-			'G', 'G', 'F', 'D', '#', 'E', 'E', 'D', 'C', '#', 'A', 'A', 'B', 'G', '#',
-			'D', 'D', 'E', 'C', '#', 'B', 'B', 'A', '#', 'G', 'G', 'F', 'D', '#',
-			'E', 'E', 'D', 'C', '#', 'A', 'A', 'G', '#', 'G', 'G', 'F', 'D', '#',
-			'E', 'E', 'D', 'C', '#', 'A', 'A', 'G', '#', 'G', 'G', 'F', 'D', '#',
-			'E', 'E', 'D', 'C', '#', 'A', 'A', 'G', '#', 'G', 'G', 'F', 'D', '#',
-			'E', 'E', 'D', 'C', '#', 'A', 'A', 'B', 'G', '#', 'D', 'D', 'E', 'C', '#',
-			'B', 'B', 'A', '#', 'G', 'G', 'F', 'D', '#', 'E', 'E', 'D', 'C', '#',
-			'A', 'A', 'B', 'G', '#', 'D', 'D', 'E', 'C', '#', 'B', 'B', 'A', '#',
-			'0'  // Null-terminating character
-			}; //Mozart
-
-// 		play_sound('A');
-// 		_delay_ms(250);
-// 		play_sound('B');
-// 		_delay_ms(250);
-		uint8_t i = 0;
-		while(1)
-		{
-			play_sound(notes[i]);
-			_delay_ms(125);
-			if(notes[i]=='0')
-			{
-				i = 0;
-			}
-			++i;
-		}
-	}
-	
-	// Debug USART Printing test
-	char String[25];
-	sprintf(String,"Wellcome to Clawesome Claverine \n");
-	UART_putstring(String);
-	_delay_ms(500);
-// 	while(1){}
-	// Code
-	LCD_setScreen(GREEN);
-	LCD_drawBlock(1,19,158,127,BLUE);
-	sprintf(String,"gone through\n");
-	UART_putstring(String);
-
-    /* Set game mode, this could be an ISR from a button press, but 
-	 *for now this is hardcoded to be PLAY mode */
-// 	game_mode = PLAY;
-// 	sprintf(String,"setting game mode to PLAY \n");
-// 	UART_putstring(String);
-	
-	while (1)
-	{
-		drive_motors();
-	}
-
-// 	while(1)
-// 	{	
-// 		// Check the current game mode and perform actions accordingly
-// 		switch (game_mode) {
-// 			case SLEEP:
-// 				sprintf(String,"SLEEP mode\n");
-// 				UART_putstring(String);
-// 				break;
-// 			case PLAY:
-// 				sprintf(String,"PLAY mode, driving motors\n");
-// 				UART_putstring(String);
-// 				drive_motors();
-// 				break;
-// 			case WIN:
-// 				sprintf(String,"WIN mode starts, turn on LED lights\n");
-// 				UART_putstring(String);
-// 				/* Turn on LED lights */
-// 				_delay_ms(500);
-// 				sprintf(String,"WIN mode ends, turn off LED lights\n");
-// 				UART_putstring(String);
-// 				sprintf(String,"Setting game mode to SLEEP\n");
-// 				UART_putstring(String);
-// 				game_mode = SLEEP;
-// 				break;
-// 			case LOSS:
-// 				sprintf(String,"LOSS mode\n");
-// 				UART_putstring(String);
-// 				break;
-// 			default:	
-// 				break;
-// 		}
-	/*}*/
-	
-	while (1);
 }

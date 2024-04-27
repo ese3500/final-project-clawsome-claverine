@@ -212,17 +212,78 @@ The coins that are used to play the machine will fall in a container which can b
 Based on your quantified system performance, comment on how you achieved or fell short of your expected software requirements. You should be quantifying this, using measurement tools to collect data.
 
 #### Overview
-The software of the projects contains out of the libraries as well as the main file all coded in bare metal C. Half of the library is used for UART, which is disabled in the final project as it is not needed and there is a lack of pins and the other half are the libraries for the LCD screen which were written by Darian in a prior lab assignment. The `main()` in file consists out of three parts, the first part which includes all the functions to initialize the board and all the pins, the second part with functions that are used for the game dynamics and the last part including the `main()` function as well as the `play_machine()` function putting everything together. Where the `main()` function only initializes the screen and calls the `play_machine()` function one in an infintie loop. The paly machine function does all of the machine's structural functionallities and calls other functions like `play_easy()` for the actual gameplay. In the initializing part there is one main `Initialize()` function but this again calls a lot of other more specific initialize functions to make the code more readable and understandable.
+The software of the projects contains out of the libraries as well as the main file all coded in bare metal C. Half of the library is used for UART, which is disabled in the final project as it is not needed and there is a lack of pins and the other half are the libraries for the LCD screen which were completed by Darian in a prior lab assignment. The `main()` in file consists out of three parts, the first part which includes all the functions to initialize the board and all the pins, the second part with functions that are used for the game dynamics and the last part including the `main()` function as well as the `play_machine()` function putting everything together. Where the `main()` function only initializes the screen and calls the `play_machine()` function one in an infintie loop. The paly machine function does all of the machine's structural functionallities and calls other functions like `play_easy()` for the actual gameplay. In the initializing part there is one main `Initialize()` function but this again calls a lot of other more specific initialize functions to make the code more readable and understandable.
+
+97.5% of the data memory is used, for the macros, the countdown but also for the Mozart song stored which is played during gameply.
 
 #### Users
 Everyone with more than 6 years can use our product as it is very safe. The moving parts are well shielded from the user and the voltages on all the sensors and the screen are only 5V and at most 20mA which can not harm anyone. It is also very easy to use and very intuitive so really anyone can  have fun playing with it.
 
 #### Definitions, Abreviations
+
+Our definitions should be very intuitive and we do not use abreviations but rather use long terms for the variables which make them more clear. For example the macro `left_boundary_hit` is set by an interrupt to 1 if the left boundary sensor is hit and to 0 if the left boundary sensor is not hit anymore. On the other side the pins are not given other names but they are coded as their number which is why we include a table in the `HRS` part to document them better. Two importenat macros are the adc macros like `adc_value_backforth` wich store the last measured value by the ADC multiplexer of the joystick.
+
+There is the `main.c` file which is the final file which was flashed onto the microcontroller and then there is a `main_development.c` file which contains a lot unused code for changes to the software or the modes.
+
 #### Funcitonality
+SRS 01 - Timer 0 (a 8 bit timer) is used in PWM for the LCD screen to give it its bright ness
+SRS 02 - Timer 3 (a 16 bit timer) is used in PWM mode for playing the music
+SRS 03 - `selectADCchannel()` selects the ADC channel given as a variable (0 or 1 in our exa ple)
+SRS 04 - `ISR(ADC_vect)` reads the ADC value and changes the channels
+SRS 05 - `setUPADC()` setup of the ADC
+SRS 06 - `motor_stop_backforth()` stops the back and forth motors
+SRS 07 - `motor_stop_rithleft()` stops the right left motors
+SRS 08 - `motor_stop_updown()` stops the up down motors
+SRS 09 - `drive_motor_right()` drives motor right
+SRS 10 - `drive_motor_left()` drives motor left
+SRS 11 - `drive_motor_down()` drives motor down
+SRS 12 - `drive_motor_up()` drives motor up
+SRS 13 - `drive_motor_back()` drives motor back
+SRS 14 - `drive_motor_forth()` drives motor forth
+SRS 15 - `drive_motors()` drives and stops motors according to button and ADC inputs
+SRS 16 - `set_up_interrupt()` sets up boudary sensor interrupts and coin as well as button interupts at the e pins
+SRS 17 - `set_up_sound()` sets up the sound system with the rigth timer but not playing yet
+SRS 18 - `stop_sound()` stops sound means it sets the duty cycle to zero
+SRS 19 - `play_sound()` plays sound means the duty cycle gets nonzero and the frequency gets changed according to the demanded letter which belongs to a tone and therefore a frequency, the letter is passed into the function as a parameter and the function only plays a single tone
+SRS 20 - `ISR(PCINT3_vect)` pin chang interrupts at the e pins
+
 
 #### 3.2 Hardware Requirements Specification (HRS) Results
 
 Based on your quantified system performance, comment on how you achieved or fell short of your expected hardware requirements. You should be quantifying this, using measurement tools to collect data.
+
+##### Connections to ATmega328PB
+
+| ATmega328PB port | Connected device | Connected device port | remark |
+|----------|----------|----------|----------|
+|PB0|Adafruit, 1.8'' TFT, LCD Display|D/C|          |
+|PB1|Adafruit, 1.8'' TFT, LCD Display|RESET|          |
+|PB2|Adafruit, 1.8'' TFT, LCD Display|TFT_CS|          |
+|PB3|Adafruit, 1.8'' TFT, LCD Display|MOSI|          |
+|PB5|Adafruit, 1.8'' TFT, LCD Display|SCK|          |
+|PD6|Adafruit, 1.8'' TFT, LCD Display|LITE|          |
+|          |          |          |          |
+|          |          |          |          |
+|          |          |          |          |
+
+###### Connections to Ground (Yellow)
+| Connected device | Connected device port | remark |
+|----------|----------|----------|
+|Adafruit, 1.8'' TFT, LCD Display|GND|          |
+|          |          |          |
+|          |          |          |
+|          |          |          |
+|          |          |          |
+
+
+###### Connections to Vcc (5V) (Green)
+| Connected device | Connected device port | remark |
+|----------|----------|----------|
+|Adafruit, 1.8'' TFT, LCD Display|VCC|          |
+|          |          |          |
+|          |          |          |
+|          |          |          |
+|          |          |          |
 
 ### 4. Conclusion
 
