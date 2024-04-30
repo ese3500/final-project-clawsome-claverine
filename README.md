@@ -295,8 +295,73 @@ SRS 32 - `play_machine()` playing the machine, this is the primary function that
 SRS 33 - `main()` main function which initializes the screen and call the `play_machine()` function in a while loop to keep the machine running
 
 #### 3.2 Hardware Requirements Specification (HRS) Results
+HRS 01 The machine shall use Atmega328PB as the microcontroller.
 
-Based on your quantified system performance, comment on how you achieved or fell short of your expected hardware requirements. You should be quantifying this, using measurement tools to collect data.
+We achieved this HRS by using Atmega328PB as the microcontroller. We were able to make use of all the pins and the final code takes up 97.5% of the data memory on the chip.
+
+HRS 02 The motors shall be controlled by joystick, buttons, and limited by boundary sensing.
+
+We achieved this HRS. For joystick, we used two-channel ADC. We built pull-up circuits for the buttons and boundary sensors, and used pin change interrupts for control.
+
+HRS 03 There shall be an LCD screen that display 2 game modes for the player to choose: normal mode and difficult mode.
+
+The final product has 3 game modes: easy mode, crazy mode, and surrender mode
+
+HRS 04 There shall be a coin detection sensor to initiate the game.
+
+We used the coin detection sensor that came with the machine, which is a simple button structure.
+
+HRS 05 There shall be a catch sensor to detect a successful catch.
+
+Initially we planned to use the catch sensor that came with the machine, which involves a ultrared light and a custom sensor. However, we broke the light in the process of testing. As a result, this HRS is achieved by building a new sensor that involves 8 level shifter buttons in parallel. The triggering of any of the buttons would result in a pin change interrupt which signals a successful catch.
+
+HRS 06 Buttons shall be hardware debounced.
+
+We used capacitors in parallel with the buttons to achieve hardware debouncing.
+
+HRS 07 There shall be 8 LEDs, which shall light up one after another in groups of two in game mode.
+
+The final product has 8 LEDs: two green ones, two blue ones, two red ones, and two yellow ones. During game mode, the blue LEDs light up first, followed by the red and the yellow, followed by the green ones.
+
+HRS 08 There shall be a crazy game mode to engage the player by increasing the difficulty.
+
+The crazy game mode in the final product has 20 seconds of time, and the difficulty is increased by switching up the motor movement directions and the joystick/button control. For example, moving the joystick right in crazy mode corresponds to moving the claw down instead of moving it to the right as it is in normal mode.
+
+HRS 09 The claw shall be able to carry at least 25 grams of weight.
+
+The claw in the final product is able to carry more than 25 grams of weight, as shown by its ability to carry at least two Lindor chocolate balls.
+
+HRS 10 The normal game mode shall last for 60s and a brief countdown before the game shall last for 3s.
+
+Exactly as described in the HRS, the final product has a game mode that lasts 60s and a countdown of 3 seconds.
+
+HRS 11 The claw machine case shall be modified to fit the breadboard, wires, and the microcontroller.
+
+We modified the machine case by cutting out the joystick controls and replaced them without our own. We cut out the battery case to fit our microcontroller and our breadboard. We also had to look for a hole in the bottom to pass through the wires for the power supply.
+
+HRS 12 The wires in the original machine shall be cut and then connected with jumper wires.
+
+The original wires were cut from the original board, we peeled the wires and connected the wires with our jumper wires. We also put wrapper rubber tubes around the connecting parts of the wires and used heat gun to seal the wire connections.
+
+HRS 13 The motors shall be power by DC power supply.
+
+In the final product, the motors and the buzzers were running on 7.12V voltage and 0.1A-0.3A current.
+
+HRS 14 There shall not be more cables coming out of the machine other than the power supply cables which include a power and ground cable to the DC power supply, and a USB cable to power the microcontroller.
+
+Exactly as described
+
+HRS 15 The final product should be packaged and a closed box.
+
+The final product is completely packaged cased in one box.
+
+HRS 16 There shall be only one Atmega microcontroller used, since there should be enough pins.
+
+We used only one Atmega and we used every pin on the chip.
+
+HRS 17 There shall be a buzzer that plays music during the game playing mode. Upon a successful catch, or time running out, there shall be different tunes that indicate winning or losing respectively.
+
+We programmed a famous Mozart tune to play on the buzzer during game mode, and there are two simple four-note winning and losing tunes.
 
 ##### Connections to ATmega328PB
 
@@ -331,7 +396,7 @@ Based on your quantified system performance, comment on how you achieved or fell
 ### 4. Conclusion
 
 What went well?
-We managed our time effectively and finished ahead of schedule, which allowed us to have extra time for debugging and polishing our project. Despite facing technical challenges, we persevered and were able to overcome them. In the end we measrued that, our claw machine was fully functional and was able to carry 50 grams of weight (two Lindor chocolate balls).
+We managed our time effectively and finished ahead of schedule, which allowed us to have extra time for debugging and polishing our project. Despite facing technical challenges, we persevered and were able to overcome them. In the end we measrued that, our claw machine was fully functional and was able to carry 50 grams of weight (two Lindor chocolate balls). It also turned out that our machine is actually considerably robust, it was shaken a lot and it ran for a long time, someone even spilled water on to it and it is still working perfectly fine.
 
 What accomplishments are you proud of?
 We are proud to successfully complete the project within the designated time frame, despite encountering challenges such as motor control issues, Atmega breakage, ADC complexities, and the need to fabricate a custom catch sensor. A notable achievement was utilizing every pin on the Atmega328PB and efficiently managing data memory usage, reaching 97.5%. Overcoming these hurdles while delivering a fully functional claw machine stands as a significant milestone for us.
