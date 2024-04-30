@@ -355,7 +355,7 @@ HRS 15 The final product should be packaged and a closed box.
 
 The final product is completely packaged cased in one box.
 
-HRS 16 There shall be only one Atmega microcontroller used, since there should be enough pins.
+HRS 16 There shall be only one Atmega microcontroller used, since there should be enough pins and not a lot of space in the box.
 
 We used only one Atmega and we used every pin on the chip.
 
