@@ -1,6 +1,6 @@
 <p float="right">
-  <img src="p0.png" width="32%" />
-  <img src="p2.png" width="32%" /> 
+  <img src="img/IMG_2089.JPG" width="32%" />
+  <img src="img/IMG_2031.JPG" width="32%" /> 
   <img src="p3.png" width="32%" />
 </p>
 
@@ -10,7 +10,7 @@
 <p float="right">
   <img src="p0.png" width="32%" />
   <img src="p2.png" width="32%" /> 
-  <img src="p3.png" width="32%" />
+  <img src="img/IMG_2056.JPG" width="32%" />
 </p>
 
 <!-- <h1 align="center">final-project-skeleton</h3> -->
@@ -182,7 +182,14 @@ If you’ve never made a Github pages website before, you can follow this webpag
 
 ### 1. Video
 
-[Insert final project video here]
+<video controls>
+  <source src="img/demo.mov" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+The [video](https://youtu.be/T5lsJIOH72M) can be seen on youtube in full quality.
+
+Else: https://youtu.be/T5lsJIOH72M
 
 ### 2. Images
 
@@ -193,6 +200,33 @@ If you’ve never made a Github pages website before, you can follow this webpag
   <img src="p2.png" width="24%" /> 
   <img src="p3.png" width="24%" />
   <img src="p4.png" width="24%">
+</p>
+
+<p float="center">
+  <img src="img/IMG_2025.JPG" width="24%" />
+  <img src="img/IMG_2026.JPG" width="24%" /> 
+  <img src="img/IMG_2057.JPG" width="24%" />
+  <img src="img/IMG_2028.JPG" width="24%">
+</p>
+
+<p float="center">
+  <img src="img/IMG_2029.JPG" width="24%" />
+  <img src="img/IMG_2030.JPG" width="24%" /> 
+  <img src="img/IMG_2031.JPG" width="24%" />
+  <img src="img/IMG_2053.JPG" width="24%">
+</p>
+
+<p float="center">
+  <img src="img/IMG_2085.JPG" width="24%" />
+  <img src="img/IMG_2090.JPG" width="24%" /> 
+  <img src="img/IMG_2087.JPG" width="24%" />
+  <img src="img/IMG_2088.JPG" width="24%">
+</p>
+
+<p float="center">
+  <img src="img/IMG_2021.JPG" width="24%" />
+  <img src="img/IMG_2086.JPG" width="24%" /> 
+  <img src="img/IMG_2024.JPG" width="24%">
 </p>
 
 ### 3. Results
@@ -304,23 +338,25 @@ We are proud to successfully complete the project within the designated time fra
 Our primary aim with the claw machine was to provide entertainment and bring excitement and joy. After four weeks of dedicated effort, we are delighted to have achieved that goal. During the demo day, people were impressed by the concept and thoroughly enjoyed playing with it.
 
 What did you learn/gain from this experience?
-We gained hands-on experience with microcontrollers, honed our problem-solving skills, improved our understanding of electronics and microcontroller programming concepts, and developed resilience in the face of technical challenges. We learned that driving motors that require high current is dangerous in an Arduino project, and chips do burn when you send too much current through it.
+We gained hands-on experience with microcontrollers, honed our problem-solving skills, improved our understanding of electronics and microcontroller programming concepts, and developed resilience in the face of technical challenges. We learned that driving motors that require high current is dangerous in an ATmega project, and chips do burn when you send too much current through it. (Especially we learned to always plug in the common ground before plugging in the supply, and when plugging out the vice verca.)
 
 Did you have to change your approach?
 Yes, we had to adjust our approach multiple times, especially when dealing with motor control and creating a custom catch sensor after the original one broke. We also had to refine our code to implement different game modes effectively.
 
 What could have been done differently? 
-In hindsight, we could have allocated more time for testing and debugging, especially considering the complexities involved in motor control and sensor integration. Additionally, having backup components like extra ATMegas could have helped us avoid delays caused by hardware failures.
+In hindsight, we could have allocated more time for testing and debugging, especially considering the complexities involved in motor control and sensor integration. Additionally, having backup components like extra ATMegas could have helped us avoid delays caused by hardware failures. Another thing Darian should have done differently is lecturing August about how Darian managed to burn the first Atmega as August later did the exact same mistake in the same way burning the second one.
 
 Did you encounter obstacles that you didn’t anticipate?
 Yes, we faced unexpected challenges such as motor control issues that required extensive troubleshooting and building a custom catch sensor due to the original sensor breaking. We also did not fully anticipate burning through two Atmegas.
 
 What could be a next step for this project?
-A next step could be further refining the code and adding more advanced features to the claw machine, such as incorporating computer vision for object recognition or enhancing the gameplay with additional modes and challenges. Conducting user testing and gathering feedback could also help in improving the overall experience. During the demo, someone mentioned that the machine should be able to reset the claw after every game; this could be an additional feature.
+A next step could be further refining the code and adding more advanced features to the claw machine, such as incorporating computer vision for object recognition or enhancing the gameplay with additional modes and challenges. Conducting user testing and gathering feedback could also help in improving the overall experience. During the demo, someone mentioned that the machine should be able to reset the claw after every game; this could be an additional feature which would be really easy to implement.
 
 <h2 align="center">References</h2>
 
-Fill in your references here as you work on your proposal and final submission. Describe any libraries used here.
+There where no additional libraries used, only the ones we had to complete in class on our own where the version from Darian was used. The UART library we got is importet into the code but actually not used, this library we got and was used for testing but we do not use UART in the final project and it is therefore disabled. It is not even possible anymore to use UART as we overwrote PINC0. So we are using only the libraries for the LCD screen which were completet by Darian.
+
+Additionally we are only using standard C libraries to run the standard C code on our microcontroller. These libraries are `stdio.h`, which is the standard input output library, then two libraries for avr namely `avr/io.h` and `avr/interrupt.h` which include the IO definitions for the device and provide a set for the default interrupt routinges. The last library used is the `util/delay.h` which provides a busy waiting function `_delay_ms()` which is the only function used from this library.
 
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/2TmiRqwI)
 
